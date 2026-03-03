@@ -1,14 +1,9 @@
 import Book from "../models/Book.js";
+import Borrowing from "../models/Borrowing.js";
 
 export const getBooks = async (req, res) => {
   try {
-    const {
-      search,
-      genre,
-      page = 1,
-      limit = 5,
-      sort = "createdAt",
-    } = req.query;
+    const { search, genre, page = 1, limit = 5, sort = "createdAt" } = req.query;
 
     const query = {};
 
@@ -23,8 +18,7 @@ export const getBooks = async (req, res) => {
     const books = await Book.find(query)
       .sort(sort)
       .skip((page - 1) * limit)
-      .limit(Number(limit))
-      .populate("borrowedBy", "name email");
+      .limit(Number(limit));
 
     const total = await Book.countDocuments(query);
 
@@ -86,11 +80,10 @@ export const deleteBook = async (req, res) => {
 
 export const borrowBook = async (req, res) => {
   try {
-    if (!req.user) {
-      return res.status(401).json({ message: "Нет авторизации" });
-    }
+    const userId = req.user.id || req.user._id;
+    const bookId = req.params.id;
 
-    const book = await Book.findById(req.params.id);
+    const book = await Book.findById(bookId);
 
     if (!book) {
       return res.status(404).json({ message: "Книга не найдена" });
@@ -100,15 +93,15 @@ export const borrowBook = async (req, res) => {
       return res.status(400).json({ message: "Книга уже выдана" });
     }
 
-    const userId = req.user.id || req.user._id;
+    await Borrowing.create({
+      user: userId,
+      book: bookId,
+    });
 
     book.available = false;
-    book.borrowedBy = userId;
-    book.borrowedAt = new Date();
-
     await book.save();
 
-    res.json({ message: "Книга успешно выдана", book });
+    res.json({ message: "Книга успешно выдана" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Ошибка выдачи книги" });
@@ -117,25 +110,48 @@ export const borrowBook = async (req, res) => {
 
 export const returnBook = async (req, res) => {
   try {
-    const book = await Book.findById(req.params.id);
+    const userId = req.user.id || req.user._id;
+    const bookId = req.params.id;
 
-    if (!book) {
-      return res.status(404).json({ message: "Книга не найдена" });
+    const borrowing = await Borrowing.findOne({
+      user: userId,
+      book: bookId,
+      status: "active",
+    });
+
+    if (!borrowing) {
+      return res.status(400).json({
+        message: "Активная выдача не найдена",
+      });
     }
 
-    if (book.available) {
-      return res.status(400).json({ message: "Книга уже в библиотеке" });
-    }
+    borrowing.status = "returned";
+    borrowing.returnedAt = new Date();
+    await borrowing.save();
 
+    const book = await Book.findById(bookId);
     book.available = true;
-    book.borrowedBy = null;
-    book.borrowedAt = null;
-
     await book.save();
 
-    res.json({ message: "Книга возвращена", book });
+    res.json({ message: "Книга возвращена" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Ошибка возврата книги" });
+  }
+};
+
+export const getMyBooks = async (req, res) => {
+  try {
+    const userId = req.user.id || req.user._id;
+
+    const myBorrowings = await Borrowing.find({
+      user: userId,
+      status: "active",
+    }).populate("book");
+
+    res.json(myBorrowings);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Ошибка получения книг пользователя" });
   }
 };

@@ -12,36 +12,18 @@ const bookSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    description: {
-      type: String,
-    },
-    year: {
-      type: Number,
-    },
-    genre: {
-      type: String,
-    },
+    description: String,
+    year: Number,
+    genre: String,
     available: {
       type: Boolean,
       default: true,
-    },
-
-    // Кто взял книгу
-    borrowedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default: null,
-    },
-
-    // Когда взяли
-    borrowedAt: {
-      type: Date,
-      default: null,
     },
   },
   { timestamps: true }
 );
 
-const Book = mongoose.model("Book", bookSchema);
+bookSchema.index({ title: "text", author: "text" });
+bookSchema.index({ genre: 1 });
 
-export default Book;
+export default mongoose.model("Book", bookSchema);
