@@ -1,42 +1,240 @@
-#root {
-  max-width: 1280px;
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #fdf5ec, #f3f2ff);
+  color: #211b2a;
+}
+
+.app__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 3rem;
+}
+
+.app__logo {
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.app__nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.app__nav-link {
+  font-size: 0.95rem;
+  color: #5c5669;
+}
+
+.app__nav-link--active {
+  color: #211b2a;
+  font-weight: 600;
+}
+
+.app__auth-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.button {
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+}
+
+.button--ghost {
+  background: transparent;
+  color: #211b2a;
+}
+
+.button--primary {
+  background: #f6a800;
+  color: #211b2a;
+}
+
+.app__main {
+  padding: 1.5rem 3rem 3rem;
+  flex: 1;
+}
+
+.catalog {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.catalog__hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.catalog__title {
+  font-size: 2.4rem;
+  margin: 0 0 0.5rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.catalog__subtitle {
+  margin: 0;
+  color: #6c647c;
 }
 
-.card {
-  padding: 2em;
+.catalog__search {
+  display: flex;
+  gap: 0.75rem;
 }
 
-.read-the-docs {
-  color: #888;
+.catalog__search-input,
+.catalog__genre-select,
+.form-input {
+  border-radius: 999px;
+  border: 1px solid #e0d8f0;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  min-width: 220px;
+  background: #fffdf8;
+}
+
+.catalog__pagination {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.catalog__page-indicator {
+  font-size: 0.9rem;
+  color: #6c647c;
+}
+
+.shelf {
+  background: #fffdf8;
+  border-radius: 1.5rem;
+  padding: 1.8rem 1.8rem 2.2rem;
+  box-shadow: 0 22px 40px rgba(27, 16, 64, 0.06);
+}
+
+.shelf__title {
+  margin: 0 0 1.4rem;
+  font-size: 1.2rem;
+}
+
+.shelf__list {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.shelf__book {
+  width: 120px;
+  height: 180px;
+  border-radius: 0.8rem;
+  background-size: cover;
+  background-position: center;
+}
+
+.shelf__book--placeholder {
+  background: linear-gradient(135deg, #dad7f2, #f9d5b2);
+  opacity: 0.6;
+}
+
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.page__title {
+  font-size: 2rem;
+  margin-bottom: 0.6rem;
+}
+
+.page__text {
+  color: #6c647c;
+}
+
+.page__list {
+  margin: 1.2rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.page__list-item {
+  margin-bottom: 0.4rem;
+}
+
+.auth {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth__card {
+  width: 100%;
+  max-width: 420px;
+  background: #fffdf8;
+  padding: 2rem 2.2rem 2.4rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 22px 40px rgba(27, 16, 64, 0.06);
+}
+
+.auth__form {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth__field span {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
+  color: #6c647c;
+}
+
+.auth__submit {
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.admin {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fdf5ec, #f3f2ff);
+}
+
+.admin__sidebar {
+  padding: 2rem 1.5rem;
+  border-right: 1px solid #e0d8f0;
+}
+
+.admin__brand {
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.admin__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin__link {
+  font-size: 0.95rem;
+  color: #5c5669;
+}
+
+.admin__link--active {
+  color: #211b2a;
+  font-weight: 600;
+}
+
+.admin__main {
+  padding: 2rem 3rem;
 }
