@@ -2,21 +2,51 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 // Регистрация
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, surname, email, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    // Валидация
+    const trimmedName = name?.trim();
+    const trimmedSurname = surname?.trim();
+    const trimmedEmail = email?.trim().toLowerCase();
+
+    if (!trimmedName || trimmedName.length < 2) {
+      return res.status(400).json({ message: "Имя должно быть не менее 2 символов" });
+    }
+    if (trimmedName.length > 50) {
+      return res.status(400).json({ message: "Имя не более 50 символов" });
+    }
+    if (trimmedSurname && trimmedSurname.length > 50) {
+      return res.status(400).json({ message: "Фамилия не более 50 символов" });
+    }
+    if (!trimmedEmail) {
+      return res.status(400).json({ message: "Введите email" });
+    }
+    if (!EMAIL_REGEX.test(trimmedEmail)) {
+      return res.status(400).json({ message: "Некорректный формат email" });
+    }
+    if (!password || password.length < 6) {
+      return res.status(400).json({ message: "Пароль не менее 6 символов" });
+    }
+    if (password.length > 100) {
+      return res.status(400).json({ message: "Пароль не более 100 символов" });
+    }
+
+    const existingUser = await User.findOne({ email: trimmedEmail });
     if (existingUser) {
-      return res.status(400).json({ message: "Пользователь уже существует" });
+      return res.status(400).json({ message: "Пользователь с таким email уже существует" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      name,
-      email,
+      name: trimmedName,
+      surname: trimmedSurname || undefined,
+      email: trimmedEmail,
       password: hashedPassword,
     });
 
@@ -25,12 +55,14 @@ export const registerUser = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        surname: user.surname,
         email: user.email,
         role: user.role,
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Ошибка сервера", error });
+    console.error("[register] Ошибка:", error);
+    res.status(500).json({ message: "Ошибка сервера", error: error.message });
   }
 };
 
@@ -61,6 +93,7 @@ export const loginUser = async (req, res) => {
       user: {
         id: user._id,
         name: user.name,
+        surname: user.surname,
         email: user.email,
         role: user.role,
       },

@@ -1,9 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import "./App.css";
 
-import CatalogPage from "./pages/CatalogPage.jsx";
-import MyBooksPage from "./pages/MyBooksPage.jsx";
+import CatalogPage from "./pages/catalog/CatalogPage.jsx";
+import MyBooksPage from "./pages/books/MyBooksPage.jsx";
+import MyRequestsPage from "./pages/requests/MyRequestsPage.jsx";
+import ReadBookPage from "./pages/books/ReadBookPage.jsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.jsx";
+import AdminRequestsPage from "./pages/admin/AdminRequestsPage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";
 import RegisterPage from "./pages/auth/RegisterPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
@@ -19,6 +21,8 @@ function App() {
           <Route index element={<CatalogPage />} />
           <Route element={<PrivateRoute />}>
             <Route path="/my-books" element={<MyBooksPage />} />
+            <Route path="/my-requests" element={<MyRequestsPage />} />
+            <Route path="/read/:id" element={<ReadBookPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -27,6 +31,7 @@ function App() {
         <Route element={<AdminRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboardPage />} />
+            <Route path="requests" element={<AdminRequestsPage />} />
           </Route>
         </Route>
 

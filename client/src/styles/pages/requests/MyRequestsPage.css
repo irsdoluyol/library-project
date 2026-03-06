@@ -1,0 +1,70 @@
+/* MyRequestsPage — форма и список обращений */
+
+.requests-form {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 500px;
+}
+
+.form-input--textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.requests-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.requests-list__item {
+  background: #fffdf8;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e0d8f0;
+}
+
+.requests-list__subject {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #211b2a;
+}
+
+.requests-list__meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  color: #6c647c;
+}
+
+.requests-list__status {
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.requests-list__status--new {
+  background: #e8e4f0;
+  color: #5c5669;
+}
+
+.requests-list__status--in_progress {
+  background: #f9d5b2;
+  color: #8b6914;
+}
+
+.requests-list__status--closed {
+  background: #d4edda;
+  color: #155724;
+}
+
+.requests-list__message {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #5c5669;
+  white-space: pre-wrap;
+}

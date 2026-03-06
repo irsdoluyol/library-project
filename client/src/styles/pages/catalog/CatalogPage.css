@@ -1,0 +1,84 @@
+/* CatalogPage — каталог, поиск, полка книг */
+
+.catalog {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.catalog__hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+}
+
+.catalog__title {
+  font-size: 2.4rem;
+  margin: 0 0 0.5rem;
+}
+
+.catalog__subtitle {
+  margin: 0;
+  color: #6c647c;
+}
+
+.catalog__search {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.catalog__pagination {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.catalog__page-indicator {
+  font-size: 0.9rem;
+  color: #6c647c;
+}
+
+.shelf {
+  background: #fffdf8;
+  border-radius: 1.5rem;
+  padding: 1.8rem 1.8rem 2.2rem;
+  box-shadow: 0 22px 40px rgba(27, 16, 64, 0.06);
+}
+
+.shelf__title {
+  margin: 0 0 1.4rem;
+  font-size: 1.2rem;
+}
+
+.shelf__list {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.shelf__book {
+  width: 120px;
+  height: 180px;
+  border-radius: 0.8rem;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.75rem;
+}
+
+.shelf__book--placeholder {
+  background: linear-gradient(135deg, #dad7f2, #f9d5b2);
+  opacity: 0.6;
+}
+
+.shelf__book-actions {
+  margin-top: 0.5rem;
+}
+
+.shelf__book-unavailable {
+  font-size: 0.85rem;
+}

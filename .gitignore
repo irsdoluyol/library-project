@@ -3,3 +3,5 @@ node_modules/
 dist/
 build/
 .DS_Store
+server/uploads/books/*.pdf
+server/uploads/books/*.txt

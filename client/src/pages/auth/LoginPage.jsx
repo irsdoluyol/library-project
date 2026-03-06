@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext.jsx";
-import "../../App.css";
+import { useAuth } from "../../context/useAuth.js";
+import AuthCard from "../../components/auth/AuthCard.jsx";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -26,15 +26,13 @@ function LoginPage() {
   };
 
   return (
-    <section className="auth">
-      <div className="auth__card">
-        <h1 className="page__title">Log in</h1>
-        <p className="page__text">
-          Enter your credentials to access your library.
-        </p>
-        <form className="auth__form" onSubmit={handleSubmit}>
+    <AuthCard
+      title="Вход"
+      description="Введите данные для доступа к библиотеке."
+    >
+      <form className="auth__form" onSubmit={handleSubmit}>
           <label className="auth__field">
-            <span>Email</span>
+            <span>Email *</span>
             <input
               type="email"
               className="form-input"
@@ -44,7 +42,7 @@ function LoginPage() {
             />
           </label>
           <label className="auth__field">
-            <span>Password</span>
+            <span>Пароль *</span>
             <input
               type="password"
               className="form-input"
@@ -53,17 +51,16 @@ function LoginPage() {
               required
             />
           </label>
-          {error && <p className="page__text">{error}</p>}
+          {error && <p className="auth__error">{error}</p>}
           <button
             type="submit"
             className="button button--primary auth__submit"
             disabled={submitting}
           >
-            {submitting ? "Logging in..." : "Log in"}
+            {submitting ? "Вход..." : "Войти"}
           </button>
         </form>
-      </div>
-    </section>
+    </AuthCard>
   );
 }
 

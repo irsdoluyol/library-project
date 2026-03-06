@@ -1,0 +1,11 @@
+/* AdminBookList — список книг в админке */
+
+.admin-book__file-badge {
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+  color: #6c647c;
+}
+
+.admin-book__upload {
+  cursor: pointer;
+}

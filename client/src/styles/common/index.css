@@ -1,0 +1,4 @@
+/* Общие стили — импорт всех common модулей */
+@import "./buttons.css";
+@import "./forms.css";
+@import "./layout.css";

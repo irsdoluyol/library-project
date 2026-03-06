@@ -1,5 +1,8 @@
+import fs from "fs";
+import path from "path";
 import Book from "../models/Book.js";
 import Borrowing from "../models/Borrowing.js";
+import { uploadDir } from "../config/multer.js";
 
 export const getBooks = async (req, res) => {
   try {
@@ -65,11 +68,17 @@ export const updateBook = async (req, res) => {
 
 export const deleteBook = async (req, res) => {
   try {
-    const book = await Book.findByIdAndDelete(req.params.id);
+    const book = await Book.findById(req.params.id);
 
     if (!book) {
       return res.status(404).json({ message: "Книга не найдена" });
     }
+
+    if (book.filePath && fs.existsSync(book.filePath)) {
+      fs.unlinkSync(book.filePath);
+    }
+
+    await Book.findByIdAndDelete(req.params.id);
 
     res.json({ message: "Книга удалена" });
   } catch (error) {
@@ -137,6 +146,89 @@ export const returnBook = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Ошибка возврата книги" });
+  }
+};
+
+export const uploadBookFile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!req.file) {
+      return res.status(400).json({ message: "Файл не загружен. Выберите PDF или TXT." });
+    }
+
+    const book = await Book.findById(id);
+    if (!book) {
+      fs.unlink(req.file.path, () => {});
+      return res.status(404).json({ message: "Книга не найдена" });
+    }
+
+    if (book.filePath && fs.existsSync(book.filePath)) {
+      fs.unlinkSync(book.filePath);
+    }
+
+    const ext = path.extname(req.file.filename).toLowerCase().slice(1);
+    book.filePath = req.file.path;
+    book.fileType = ext === "pdf" ? "pdf" : "txt";
+    await book.save();
+
+    res.json({ message: "Файл загружен", book });
+  } catch (error) {
+    if (req.file?.path && fs.existsSync(req.file.path)) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch {}
+    }
+    console.error("[uploadBookFile]", error);
+    const msg = error.message || "Ошибка загрузки файла";
+    res.status(500).json({ message: msg });
+  }
+};
+
+export const readBookFile = async (req, res) => {
+  try {
+    const userId = req.user.id || req.user._id;
+    const { id } = req.params;
+
+    const borrowing = await Borrowing.findOne({
+      user: userId,
+      book: id,
+      status: "active",
+    });
+    if (!borrowing) {
+      return res.status(403).json({ message: "Книга не выдана вам" });
+    }
+
+    const book = await Book.findById(id);
+    if (!book || !book.filePath) {
+      return res.status(404).json({ message: "Файл книги не найден" });
+    }
+
+    let filePath = path.resolve(book.filePath);
+    if (!fs.existsSync(filePath)) {
+      filePath = path.join(uploadDir, `${id}.${book.fileType || "pdf"}`);
+    }
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: "Файл не найден на сервере" });
+    }
+
+    if (book.fileType === "pdf") {
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", `inline; filename="${encodeURIComponent(book.title || "book")}.pdf"`);
+      const stream = fs.createReadStream(filePath);
+      stream.on("error", (err) => {
+        console.error("[readBookFile] stream error:", err);
+        if (!res.headersSent) {
+          res.status(500).json({ message: "Ошибка чтения файла" });
+        }
+      });
+      stream.pipe(res);
+    } else {
+      const text = fs.readFileSync(filePath, "utf-8");
+      res.json({ content: text });
+    }
+  } catch (error) {
+    console.error("[readBookFile]", error);
+    res.status(500).json({ message: error.message || "Ошибка чтения файла" });
   }
 };
 

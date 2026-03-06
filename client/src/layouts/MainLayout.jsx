@@ -1,15 +1,15 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext.jsx";
-import "../App.css";
+import { useAuth } from "../context/useAuth.js";
+import "../styles/layouts/MainLayout.css";
 
 function MainLayout() {
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
 
   return (
     <div className="app">
       <header className="app__header">
-        <div className="app__logo">Online Library</div>
+        <div className="app__logo">Онлайн-библиотека</div>
         <nav className="app__nav">
           <Link
             to="/"
@@ -19,7 +19,7 @@ function MainLayout() {
                 : "app__nav-link"
             }
           >
-            Catalog
+            Каталог
           </Link>
           <Link
             to="/my-books"
@@ -29,28 +29,52 @@ function MainLayout() {
                 : "app__nav-link"
             }
           >
-            My books
+            Мои книги
           </Link>
+          {user && (
+            <Link
+              to="/my-requests"
+              className={
+                location.pathname === "/my-requests"
+                  ? "app__nav-link app__nav-link--active"
+                  : "app__nav-link"
+              }
+            >
+              Обращения
+            </Link>
+          )}
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className={
+                location.pathname.startsWith("/admin")
+                  ? "app__nav-link app__nav-link--active"
+                  : "app__nav-link"
+              }
+            >
+              Админ
+            </Link>
+          )}
         </nav>
         <div className="app__auth-actions">
           {user ? (
             <>
-              <span>{user.name || user.email}</span>
+              <span>{[user.name, user.surname].filter(Boolean).join(" ") || user.email}</span>
               <button
                 type="button"
                 className="button button--ghost"
                 onClick={logout}
               >
-                Log out
+                Выйти
               </button>
             </>
           ) : (
             <>
               <Link to="/login" className="button button--ghost">
-                Log in
+                Вход
               </Link>
               <Link to="/register" className="button button--primary">
-                Sign up
+                Регистрация
               </Link>
             </>
           )}
@@ -65,4 +89,3 @@ function MainLayout() {
 }
 
 export default MainLayout;
-

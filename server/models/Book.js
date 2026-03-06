@@ -19,6 +19,14 @@ const bookSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    filePath: {
+      type: String,
+      default: null,
+    },
+    fileType: {
+      type: String,
+      enum: ["pdf", "txt"],
+    },
   },
   { timestamps: true }
 );
