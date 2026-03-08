@@ -1,22 +1,20 @@
 import { Outlet, NavLink, Link } from "react-router-dom";
-import "../styles/layouts/AdminLayout.css";
+import styles from "./AdminLayout.module.css";
 
 function AdminLayout() {
   return (
-    <div className="admin">
-      <aside className="admin__sidebar">
-        <div className="admin__brand">Админ</div>
-        <Link to="/" className="admin__back">
+    <div className={styles.root}>
+      <aside className={styles.sidebar}>
+        <div className={styles.brand}>Админ</div>
+        <Link to="/" className={styles.back}>
           ← Назад на сайт
         </Link>
-        <nav className="admin__nav">
+        <nav className={styles.nav}>
           <NavLink
             to="/admin"
             end
             className={({ isActive }) =>
-              isActive
-                ? "admin__link admin__link--active"
-                : "admin__link"
+              isActive ? `${styles.link} ${styles.linkActive}` : styles.link
             }
           >
             Панель
@@ -24,9 +22,7 @@ function AdminLayout() {
           <NavLink
             to="/admin/requests"
             className={({ isActive }) =>
-              isActive
-                ? "admin__link admin__link--active"
-                : "admin__link"
+              isActive ? `${styles.link} ${styles.linkActive}` : styles.link
             }
           >
             Обращения
@@ -34,7 +30,7 @@ function AdminLayout() {
         </nav>
       </aside>
 
-      <main className="admin__main">
+      <main className={styles.main}>
         <Outlet />
       </main>
     </div>

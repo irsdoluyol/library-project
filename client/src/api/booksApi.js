@@ -18,41 +18,38 @@ export async function fetchBooks({
   return request(`/books?${params.toString()}`);
 }
 
-export async function fetchMyBooks(token) {
-  return request("/books/my", { token });
+export async function fetchMyBooks() {
+  return request("/books/my");
 }
 
-export async function createBook(token, payload) {
-  return request("/books", { method: "POST", body: payload, token });
+export async function createBook(payload) {
+  return request("/books", { method: "POST", body: payload });
 }
 
-export async function updateBook(token, id, payload) {
-  return request(`/books/${id}`, { method: "PUT", body: payload, token });
+export async function updateBook(id, payload) {
+  return request(`/books/${id}`, { method: "PUT", body: payload });
 }
 
-export async function deleteBook(token, id) {
-  return request(`/books/${id}`, { method: "DELETE", token });
+export async function deleteBook(id) {
+  return request(`/books/${id}`, { method: "DELETE" });
 }
 
-export async function borrowBook(token, bookId) {
-  return request(`/books/${bookId}/borrow`, { method: "POST", token });
+export async function borrowBook(bookId) {
+  return request(`/books/${bookId}/borrow`, { method: "POST" });
 }
 
-export async function returnBook(token, bookId) {
-  return request(`/books/${bookId}/return`, { method: "POST", token });
+export async function returnBook(bookId) {
+  return request(`/books/${bookId}/return`, { method: "POST" });
 }
 
-export async function uploadBookFile(token, bookId, file) {
+export async function uploadBookFile(bookId, file) {
   const formData = new FormData();
   formData.append("file", file);
 
   const url = `${API_URL}/books/${bookId}/upload`;
-  const headers = {};
-  if (token) headers.Authorization = `Bearer ${token}`;
-
   const response = await fetch(url, {
     method: "POST",
-    headers,
+    credentials: "include",
     body: formData,
   });
 
@@ -64,12 +61,9 @@ export async function uploadBookFile(token, bookId, file) {
   return data;
 }
 
-export async function fetchBookContent(token, bookId) {
+export async function fetchBookContent(bookId) {
   const url = `${API_URL}/books/${bookId}/read`;
-  const headers = {};
-  if (token) headers.Authorization = `Bearer ${token}`;
-
-  const response = await fetch(url, { headers });
+  const response = await fetch(url, { credentials: "include" });
   const contentType = response.headers.get("Content-Type") || "";
 
   if (!response.ok) {

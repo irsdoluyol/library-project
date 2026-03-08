@@ -1,67 +1,57 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { request } from "../api/request.js";
 
 const AuthContext = createContext(null);
 
-function getStoredSession() {
-  try {
-    const saved = window.localStorage.getItem("online-library-auth");
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      return { user: parsed.user || null, token: parsed.token || null };
-    }
-  } catch {
-    window.localStorage.removeItem("online-library-auth");
-  }
-  return { user: null, token: null };
-}
-
 export function AuthProvider({ children }) {
-  const initial = getStoredSession();
-  const [user, setUser] = useState(initial.user);
-  const [token, setToken] = useState(initial.token);
-  const loading = false;
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const saveSession = (nextUser, nextToken) => {
-    setUser(nextUser);
-    setToken(nextToken);
-    window.localStorage.setItem(
-      "online-library-auth",
-      JSON.stringify({ user: nextUser, token: nextToken })
-    );
+  const fetchMe = async () => {
+    try {
+      const data = await request("/auth/me");
+      setUser(data.user);
+    } catch {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const clearSession = () => {
-    setUser(null);
-    setToken(null);
-    window.localStorage.removeItem("online-library-auth");
-  };
+  useEffect(() => {
+    fetchMe();
+  }, []);
 
   const login = async (email, password) => {
     const data = await request("/auth/login", {
       method: "POST",
       body: { email, password },
     });
-    saveSession(data.user, data.token);
+    setUser(data.user);
   };
 
   const register = async (name, surname, email, password) => {
-    await request("/auth/register", {
+    const data = await request("/auth/register", {
       method: "POST",
       body: { name, surname, email, password },
     });
-    await login(email, password);
+    setUser(data.user);
   };
 
-  const logout = () => {
-    clearSession();
+  const logout = async () => {
+    try {
+      await request("/auth/logout", { method: "POST" });
+    } catch {
+      // cookie уже очищен или сеть недоступна
+    }
+    setUser(null);
   };
 
   const isAdmin = user?.role === "admin";
 
   return (
     <AuthContext.Provider
-      value={{ user, token, isAdmin, loading, login, register, logout }}
+      value={{ user, isAdmin, loading, login, register, logout }}
     >
       {children}
     </AuthContext.Provider>

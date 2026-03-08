@@ -1,0 +1,110 @@
+/* Сайдбар — левая навигация (CSS Module) */
+
+.sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  background: var(--color-sidebar);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 1.5rem 1rem;
+  gap: 1.5rem;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.logoText {
+  font-size: 0.85rem;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.navItem {
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.navItem:hover {
+  background: var(--color-sidebar-hover);
+  color: var(--color-text);
+}
+
+.navItemActive {
+  background: var(--color-accent);
+  color: white;
+}
+
+.navItemActive:hover {
+  background: var(--color-accent-hover);
+  color: white;
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.userName {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: var(--sidebar-collapsed, 72px);
+    padding: 1rem 0;
+  }
+
+  .logoText,
+  .userName {
+    display: none;
+  }
+
+  .navItem {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+}

@@ -1,0 +1,47 @@
+/* Общие стили страниц и списков */
+
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 0.6rem;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.text {
+  color: var(--color-text-muted);
+}
+
+.list {
+  margin: 1.2rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.listItem {
+  margin-bottom: 0.4rem;
+}
+
+.listItemSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.listItemSkeleton .listActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.listActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}

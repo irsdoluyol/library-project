@@ -1,9 +1,9 @@
-import "../../styles/components/admin/AdminBookForm.css";
+import pageStyles from "../../styles/common/Page.module.css";
 
 function AdminBookForm({ form, saving, onChange, onSubmit, onCancel }) {
   return (
     <form className="auth__form" onSubmit={onSubmit}>
-      <h2 className="page__subtitle">
+      <h2 className={pageStyles.subtitle}>
         {form.id ? "Редактировать книгу" : "Добавить книгу"}
       </h2>
       <label className="auth__field">

@@ -1,4 +1,5 @@
-import "../../styles/components/admin/AdminBookList.css";
+import pageStyles from "../../styles/common/Page.module.css";
+import styles from "./AdminBookList.module.css";
 
 function AdminBookList({ books, loading, saving, onEdit, onDelete, onUpload }) {
   const handleFileChange = (bookId, e) => {
@@ -10,28 +11,28 @@ function AdminBookList({ books, loading, saving, onEdit, onDelete, onUpload }) {
   };
 
   if (loading) {
-    return <p className="page__text">Загрузка книг...</p>;
+    return <p className={pageStyles.text}>Загрузка книг...</p>;
   }
 
   if (!books.length) {
-    return <p className="page__text">В каталоге пока нет книг.</p>;
+    return <p className={pageStyles.text}>В каталоге пока нет книг.</p>;
   }
 
   return (
-    <ul className="page__list">
+    <ul className={pageStyles.list}>
       {books.map((book) => (
-        <li key={book._id} className="page__list-item">
+        <li key={book._id} className={pageStyles.listItem}>
           <div>
             <strong>{book.title}</strong>{" "}
             {book.author && `— ${book.author}`}
             {book.genre && <span> ({book.genre})</span>}
             {book.year && <span>, {book.year}</span>}
             {book.filePath && (
-              <span className="admin-book__file-badge">📄 {book.fileType}</span>
+              <span className={styles.fileBadge}>📄 {book.fileType}</span>
             )}
           </div>
-          <div className="page__list-actions">
-            <label className="button button--ghost admin-book__upload">
+          <div className={pageStyles.listActions}>
+            <label className={`button button--ghost ${styles.upload}`}>
               <input
                 type="file"
                 accept=".pdf,.txt"

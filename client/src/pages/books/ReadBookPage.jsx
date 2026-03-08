@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth.js";
 import { fetchBookContent } from "../../api/booksApi.js";
-import "../../styles/pages/books/ReadBookPage.css";
+import styles from "./ReadBookPage.module.css";
 
 function ReadBookPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { user } = useAuth();
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -24,7 +24,7 @@ function ReadBookPage() {
   ];
 
   useEffect(() => {
-    if (!token || !id) return;
+    if (!user || !id) return;
 
     let objectUrl = null;
 
@@ -32,7 +32,7 @@ function ReadBookPage() {
       setLoading(true);
       setError("");
       try {
-        const result = await fetchBookContent(token, id);
+        const result = await fetchBookContent(id);
         if (result.type === "pdf") {
           objectUrl = URL.createObjectURL(result.blob);
           setContent({ type: "pdf", url: objectUrl });
@@ -50,25 +50,25 @@ function ReadBookPage() {
     return () => {
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [token, id]);
+  }, [user, id]);
 
-  if (!token) {
+  if (!user) {
     navigate("/login");
     return null;
   }
 
   if (loading) {
     return (
-      <div className="read-page read-page--loading">
-        <p className="page__text">Загрузка...</p>
+      <div className={`${styles.readPage} ${styles.loading}`}>
+        <p className={styles.errorText}>Загрузка...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="read-page read-page--error">
-        <p className="auth__error">{error}</p>
+      <div className={`${styles.readPage} ${styles.error}`}>
+        <p className={styles.errorText}>{error}</p>
         <button type="button" className="button button--primary" onClick={() => navigate("/my-books")}>
           Назад к моим книгам
         </button>
@@ -82,20 +82,20 @@ function ReadBookPage() {
 
   return (
     <div
-      className={`read-page ${isDark ? "read-page--dark" : ""}`}
+      className={`${styles.readPage} ${isDark ? styles.dark : ""}`}
       style={{ ["--read-bg"]: bgColor, ["--read-font-size"]: `${fontSize}px`, ["--read-font"]: fontFamily }}
     >
-      <header className="read-page__toolbar">
-        <button type="button" className="read-page__back" onClick={() => navigate("/my-books")}>
+      <header className={styles.toolbar}>
+        <button type="button" className={styles.back} onClick={() => navigate("/my-books")}>
           ← Назад к книгам
         </button>
-        <div className="read-page__settings">
-          <div className="read-page__themes">
+        <div className={styles.settings}>
+          <div className={styles.themes}>
             {themes.map((t) => (
               <button
                 key={t.color}
                 type="button"
-                className={`read-page__theme ${bgColor === t.color ? "read-page__theme--active" : ""}`}
+                className={`${styles.theme} ${bgColor === t.color ? styles.themeActive : ""}`}
                 style={{ background: t.color }}
                 onClick={() => setBgColor(t.color)}
                 title={t.name}
@@ -108,14 +108,14 @@ function ReadBookPage() {
               type="color"
               value={bgColor}
               onChange={(e) => setBgColor(e.target.value)}
-              className="read-page__color"
+              className={styles.color}
             />
           </label>
           <label>
             <span>Размер</span>
             <input
               type="range"
-              className="read-page__range"
+              className={styles.range}
               min="14"
               max="24"
               value={fontSize}
@@ -125,7 +125,7 @@ function ReadBookPage() {
           </label>
           <label>
             <span>Шрифт</span>
-            <select className="read-page__select" value={fontFamily} onChange={(e) => setFontFamily(e.target.value)}>
+            <select className={styles.select} value={fontFamily} onChange={(e) => setFontFamily(e.target.value)}>
               <option value="Georgia, serif">Georgia</option>
               <option value="'Times New Roman', serif">Times New Roman</option>
               <option value="Arial, sans-serif">Arial</option>
@@ -134,12 +134,12 @@ function ReadBookPage() {
         </div>
       </header>
 
-      <main className="read-page__content">
+      <main className={styles.content}>
         {content.type === "pdf" ? (
-          <iframe src={content.url} title="Книга" className="read-page__pdf" />
+          <iframe src={content.url} title="Книга" className={styles.pdf} />
         ) : (
-          <div className="read-page__text-wrap">
-            <pre className="read-page__text">{content.text}</pre>
+          <div className={styles.textWrap}>
+            <pre className={styles.text}>{content.text}</pre>
           </div>
         )}
       </main>

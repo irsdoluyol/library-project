@@ -3,15 +3,29 @@ import path from "path";
 import Book from "../models/Book.js";
 import Borrowing from "../models/Borrowing.js";
 import { uploadDir } from "../config/multer.js";
+import { logCatalog, logBorrowing } from "../utils/logger.js";
+import { escapeRegex } from "../utils/escapeRegex.js";
+
+const ALLOWED_SORT = ["createdAt", "title", "author", "year"];
+const MAX_LIMIT = 100;
+const DEFAULT_LIMIT = 12;
 
 export const getBooks = async (req, res) => {
   try {
-    const { search, genre, page = 1, limit = 5, sort = "createdAt" } = req.query;
+    let { search, genre, page = 1, limit = DEFAULT_LIMIT, sort = "createdAt" } = req.query;
+
+    limit = Math.min(Math.max(1, Number(limit) || DEFAULT_LIMIT), MAX_LIMIT);
+    page = Math.max(1, Number(page) || 1);
+    sort = ALLOWED_SORT.includes(sort) ? sort : "createdAt";
 
     const query = {};
 
-    if (search) {
-      query.title = { $regex: search, $options: "i" };
+    if (search && typeof search === "string") {
+      const escaped = escapeRegex(search.trim());
+      if (escaped) {
+        const searchRegex = { $regex: escaped, $options: "i" };
+        query.$or = [{ title: searchRegex }, { author: searchRegex }];
+      }
     }
 
     if (genre) {
@@ -37,9 +51,28 @@ export const getBooks = async (req, res) => {
   }
 };
 
+const BOOK_CREATE_FIELDS = ["title", "author", "description", "year", "genre"];
+
 export const createBook = async (req, res) => {
   try {
-    const book = await Book.create(req.body);
+    const { title, author } = req.body || {};
+    const t = (title ?? "").trim();
+    const a = (author ?? "").trim();
+    if (!t) {
+      return res.status(400).json({ message: "Название книги обязательно" });
+    }
+    if (!a) {
+      return res.status(400).json({ message: "Автор обязателен" });
+    }
+    const payload = { title: t, author: a };
+    for (const field of BOOK_CREATE_FIELDS) {
+      if (req.body[field] !== undefined && field !== "title" && field !== "author") {
+        payload[field] = req.body[field];
+      }
+    }
+    const book = await Book.create(payload);
+    const adminId = req.user?.id || req.user?._id;
+    logCatalog.create(adminId, book);
     res.status(201).json(book);
   } catch (error) {
     console.error(error);
@@ -47,18 +80,39 @@ export const createBook = async (req, res) => {
   }
 };
 
+const BOOK_UPDATE_FIELDS = ["title", "author", "description", "year", "genre", "available"];
+
 export const updateBook = async (req, res) => {
   try {
+    const { title, author } = req.body || {};
+    if (title !== undefined) {
+      const t = (title ?? "").trim();
+      if (!t) return res.status(400).json({ message: "Название не может быть пустым" });
+    }
+    if (author !== undefined) {
+      const a = (author ?? "").trim();
+      if (!a) return res.status(400).json({ message: "Автор не может быть пустым" });
+    }
+
+    const updates = {};
+    for (const field of BOOK_UPDATE_FIELDS) {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    }
+
     const book = await Book.findByIdAndUpdate(
       req.params.id,
-      req.body,
-      { new: true }
+      updates,
+      { returnDocument: "after" }
     );
 
     if (!book) {
       return res.status(404).json({ message: "Книга не найдена" });
     }
 
+    const adminId = req.user?.id || req.user?._id;
+    logCatalog.update(adminId, book._id);
     res.json(book);
   } catch (error) {
     console.error(error);
@@ -73,6 +127,9 @@ export const deleteBook = async (req, res) => {
     if (!book) {
       return res.status(404).json({ message: "Книга не найдена" });
     }
+
+    const adminId = req.user?.id || req.user?._id;
+    logCatalog.delete(adminId, book._id, book.title);
 
     if (book.filePath && fs.existsSync(book.filePath)) {
       fs.unlinkSync(book.filePath);
@@ -110,6 +167,7 @@ export const borrowBook = async (req, res) => {
     book.available = false;
     await book.save();
 
+    logBorrowing.borrow(userId, bookId);
     res.json({ message: "Книга успешно выдана" });
   } catch (error) {
     console.error(error);
@@ -142,6 +200,7 @@ export const returnBook = async (req, res) => {
     book.available = true;
     await book.save();
 
+    logBorrowing.return(userId, bookId);
     res.json({ message: "Книга возвращена" });
   } catch (error) {
     console.error(error);

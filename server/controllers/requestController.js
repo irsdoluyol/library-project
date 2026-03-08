@@ -1,4 +1,5 @@
 import Request from "../models/Request.js";
+import { logRequest } from "../utils/logger.js";
 
 export const createRequest = async (req, res) => {
   try {
@@ -27,6 +28,7 @@ export const createRequest = async (req, res) => {
       author: userId,
     });
 
+    logRequest.create(userId, request._id);
     const populated = await Request.findById(request._id).populate("author", "name surname email");
 
     res.status(201).json(populated);
@@ -78,12 +80,15 @@ export const updateRequestStatus = async (req, res) => {
     const request = await Request.findByIdAndUpdate(
       id,
       { status },
-      { new: true }
+      { returnDocument: "after" }
     ).populate("author", "name surname email");
 
     if (!request) {
       return res.status(404).json({ message: "Обращение не найдено" });
     }
+
+    const adminId = req.user?.id || req.user?._id;
+    logRequest.statusChange(adminId, id, status);
 
     res.json(request);
   } catch (error) {

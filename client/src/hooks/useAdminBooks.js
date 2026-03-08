@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import {
   fetchBooks,
   createBook,
@@ -16,7 +17,7 @@ const emptyForm = {
   description: "",
 };
 
-export function useAdminBooks(token) {
+export function useAdminBooks() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -62,36 +63,37 @@ export function useAdminBooks(token) {
   };
 
   const handleUpload = async (id, file) => {
-    if (!token || !file) return;
+    if (!file) return;
     const ext = (file.name || "").toLowerCase();
     if (!ext.endsWith(".pdf") && !ext.endsWith(".txt")) {
-      setError("Допустимы только PDF и TXT файлы");
+      toast.error("Допустимы только PDF и TXT файлы");
       return;
     }
     try {
       setError("");
       setSaving(true);
-      const { book } = await uploadBookFile(token, id, file);
+      const { book } = await uploadBookFile(id, file);
       setBooks((prev) =>
         prev.map((b) => (b._id === book._id ? book : b))
       );
+      toast.success("Файл загружен");
     } catch (err) {
-      setError(err.message || "Ошибка загрузки файла");
+      toast.error(err.message || "Ошибка загрузки файла");
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!token) return;
     if (!window.confirm("Удалить эту книгу?")) return;
     try {
       setSaving(true);
-      await deleteBook(token, id);
+      await deleteBook(id);
       setBooks((prev) => prev.filter((b) => b._id !== id));
       if (form.id === id) resetForm();
+      toast.success("Книга удалена");
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message || "Ошибка удаления");
     } finally {
       setSaving(false);
     }
@@ -99,8 +101,6 @@ export function useAdminBooks(token) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!token) return;
-
     setError("");
     setSaving(true);
 
@@ -115,17 +115,19 @@ export function useAdminBooks(token) {
 
     try {
       if (form.id) {
-        const updated = await updateBook(token, form.id, payload);
+        const updated = await updateBook(form.id, payload);
         setBooks((prev) =>
           prev.map((b) => (b._id === updated._id ? updated : b))
         );
+        toast.success("Книга обновлена");
       } else {
-        const created = await createBook(token, payload);
+        const created = await createBook(payload);
         setBooks((prev) => [created, ...prev]);
+        toast.success("Книга добавлена");
       }
       resetForm();
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message || "Ошибка сохранения");
     } finally {
       setSaving(false);
     }

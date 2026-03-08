@@ -1,3 +1,4 @@
 /* Главный файл стилей — порядок импорта важен */
+@import "./base/variables.css";
 @import "./base/reset.css";
 @import "./common/index.css";

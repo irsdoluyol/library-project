@@ -3,6 +3,13 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  path: "/",
+};
 
 // Регистрация
 export const registerUser = async (req, res) => {
@@ -50,6 +57,13 @@ export const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.cookie("token", token, COOKIE_OPTIONS);
     res.status(201).json({
       message: "Пользователь создан",
       user: {
@@ -62,7 +76,7 @@ export const registerUser = async (req, res) => {
     });
   } catch (error) {
     console.error("[register] Ошибка:", error);
-    res.status(500).json({ message: "Ошибка сервера", error: error.message });
+    res.status(500).json({ message: "Ошибка сервера" });
   }
 };
 
@@ -87,9 +101,9 @@ export const loginUser = async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    res.cookie("token", token, COOKIE_OPTIONS);
     res.json({
       message: "Успешный вход",
-      token,
       user: {
         id: user._id,
         name: user.name,
@@ -99,6 +113,35 @@ export const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Ошибка сервера", error });
+    console.error("[login] Ошибка:", error);
+    res.status(500).json({ message: "Ошибка сервера" });
   }
+};
+
+// Текущий пользователь (по cookie)
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "Пользователь не найден" });
+    }
+    res.json({
+      user: {
+        id: user._id,
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error("[getMe] Ошибка:", error);
+    res.status(500).json({ message: "Ошибка сервера" });
+  }
+};
+
+// Выход — очистка cookie
+export const logoutUser = (req, res) => {
+  res.clearCookie("token", { path: "/" });
+  res.json({ message: "Выход выполнен" });
 };

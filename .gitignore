@@ -2,6 +2,7 @@ node_modules/
 .env
 dist/
 build/
+coverage/
 .DS_Store
 server/uploads/books/*.pdf
 server/uploads/books/*.txt

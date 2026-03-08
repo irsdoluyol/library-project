@@ -1,0 +1,60 @@
+/* AdminLayout — сетка админки, сайдбар */
+
+.root {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+.sidebar {
+  padding: 2rem 1.5rem;
+  border-right: 1px solid var(--color-border);
+  background: var(--color-sidebar);
+}
+
+.brand {
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: transparent;
+  text-decoration: none;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.back:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.link {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.linkActive {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.main {
+  padding: 2rem 3rem;
+}

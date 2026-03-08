@@ -1,24 +1,21 @@
 import { API_URL } from "../config.js";
 
 /**
- * Выполняет запрос к API. Добавляет base URL, при необходимости — Authorization.
- * Парсит JSON, при ошибке бросает Error с message из ответа.
+ * Выполняет запрос к API. JWT передаётся через httpOnly cookie (credentials: include).
  * @param {string} path — путь относительно API (например "/books")
- * @param {{ method?: string, body?: object, token?: string }} options
+ * @param {{ method?: string, body?: object }} options
  * @returns {Promise<object>} — распарсенный JSON
  */
-export async function request(path, { method = "GET", body, token } = {}) {
+export async function request(path, { method = "GET", body } = {}) {
   const url = path.startsWith("http") ? path : `${API_URL}${path}`;
   const headers = { "Content-Type": "application/json" };
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
 
   let response;
   try {
     response = await fetch(url, {
       method,
       headers,
+      credentials: "include",
       ...(body !== undefined && { body: JSON.stringify(body) }),
     });
   } catch {

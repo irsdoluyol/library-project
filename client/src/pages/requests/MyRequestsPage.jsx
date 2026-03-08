@@ -1,8 +1,10 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useAuth } from "../../context/useAuth.js";
 import { createRequest, fetchMyRequests } from "../../api/requestsApi.js";
 import { useAsyncLoad } from "../../hooks/useAsyncLoad.js";
-import "../../styles/pages/requests/MyRequestsPage.css";
+import pageStyles from "../../styles/common/Page.module.css";
+import styles from "./MyRequestsPage.module.css";
 
 const STATUS_LABELS = {
   new: "Новое",
@@ -11,7 +13,7 @@ const STATUS_LABELS = {
 };
 
 function MyRequestsPage() {
-  const { token } = useAuth();
+  const { user } = useAuth();
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [submitError, setSubmitError] = useState("");
@@ -19,8 +21,8 @@ function MyRequestsPage() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const { data: requests = [], loading, error } = useAsyncLoad(
-    () => (token ? fetchMyRequests(token) : Promise.resolve([])),
-    [token, refreshTrigger]
+    () => (user ? fetchMyRequests() : Promise.resolve([])),
+    [user, refreshTrigger]
   );
 
   const handleSubmit = async (e) => {
@@ -38,25 +40,27 @@ function MyRequestsPage() {
     }
     setSubmitting(true);
     try {
-      await createRequest(token, { subject: s, message: m });
+      await createRequest({ subject: s, message: m });
       setSubject("");
       setMessage("");
       setRefreshTrigger((t) => t + 1);
+      toast.success("Обращение отправлено");
     } catch (err) {
       setSubmitError(err.message);
+      toast.error(err.message);
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <section className="page requests-page">
-      <h1 className="page__title">Мои обращения</h1>
-      <p className="page__text">
+    <section className={pageStyles.page}>
+      <h1 className={pageStyles.title}>Мои обращения</h1>
+      <p className={pageStyles.text}>
         Оставьте обращение в службу поддержки. Мы ответим в ближайшее время.
       </p>
 
-      <form className="requests-form" onSubmit={handleSubmit}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <label className="auth__field">
           <span>Тема *</span>
           <input
@@ -91,26 +95,26 @@ function MyRequestsPage() {
         </button>
       </form>
 
-      <h2 className="page__subtitle">История обращений</h2>
-      {error && <p className="page__text">{error}</p>}
+      <h2 className={pageStyles.subtitle}>История обращений</h2>
+      {error && <p className={pageStyles.text}>{error}</p>}
       {loading ? (
-        <p className="page__text">Загрузка...</p>
+        <p className={pageStyles.text}>Загрузка...</p>
       ) : requests.length === 0 ? (
-        <p className="page__text">У вас пока нет обращений.</p>
+        <p className={pageStyles.text}>У вас пока нет обращений.</p>
       ) : (
-        <ul className="requests-list">
+        <ul className={styles.list}>
           {requests.map((r) => (
-            <li key={r._id} className="requests-list__item">
-              <div className="requests-list__subject">{r.subject}</div>
-              <div className="requests-list__meta">
-                <span className={`requests-list__status requests-list__status--${r.status}`}>
+            <li key={r._id} className={styles.item}>
+              <div className={styles.subject}>{r.subject}</div>
+              <div className={styles.meta}>
+                <span className={`${styles.status} ${styles[`status${r.status === 'in_progress' ? 'InProgress' : r.status === 'closed' ? 'Closed' : 'New'}`]}`}>
                   {STATUS_LABELS[r.status] || r.status}
                 </span>
-                <span className="requests-list__date">
+                <span className={styles.date}>
                   {new Date(r.createdAt).toLocaleDateString("ru-RU")}
                 </span>
               </div>
-              <p className="requests-list__message">{r.message}</p>
+              <p className={styles.message}>{r.message}</p>
             </li>
           ))}
         </ul>

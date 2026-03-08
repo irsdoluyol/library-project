@@ -1,0 +1,56 @@
+/* AdminRequestsPage — список обращений */
+
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.item {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+}
+
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.itemSubject {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.itemAuthor {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.itemMessage {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  white-space: pre-wrap;
+}
+
+.itemFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.itemDate {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.itemSelect {
+  min-width: 140px;
+  padding: 0.4rem 0.75rem;
+}
