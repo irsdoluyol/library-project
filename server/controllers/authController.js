@@ -118,12 +118,15 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// Текущий пользователь (по cookie)
+// Текущий пользователь (по cookie). Без токена — { user: null }
 export const getMe = async (req, res) => {
   try {
+    if (!req.user?.id) {
+      return res.json({ user: null });
+    }
     const user = await User.findById(req.user.id).select("-password");
     if (!user) {
-      return res.status(404).json({ message: "Пользователь не найден" });
+      return res.json({ user: null });
     }
     res.json({
       user: {
@@ -135,8 +138,8 @@ export const getMe = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("[getMe] Ошибка:", error);
-    res.status(500).json({ message: "Ошибка сервера" });
+    console.error("[getMe] Ошибка:", error.message);
+    return res.json({ user: null });
   }
 };
 

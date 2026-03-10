@@ -1,12 +1,28 @@
+import { useMemo } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/useAuth.js";
+import Footer from "../components/layout/Footer.jsx";
 import layoutStyles from "./MainLayout.module.css";
 import sidebarStyles from "./Sidebar.module.css";
 import headerStyles from "./Header.module.css";
 
+const FACTS = [
+  "Чтение 6 минут в день снижает стресс на 68%.",
+  "В среднем человек читает 200–400 слов в минуту.",
+  "Самый длинный роман — «Люди доброй воли» М. Ромена: 2 млн слов.",
+  "Библиотека Александрии хранила около 700 000 свитков.",
+  "Книги увеличивают словарный запас на 20%.",
+];
+
 function MainLayout() {
   const location = useLocation();
   const { user, isAdmin, logout } = useAuth();
+  const showFact = location.pathname === "/";
+  const factIndex = useMemo(() => {
+    const today = new Date();
+    const start = new Date(today.getFullYear(), 0, 0);
+    return Math.floor((today - start) / 86400000) % FACTS.length;
+  }, []);
 
   const navItems = [
     { to: "/", label: "Каталог" },
@@ -52,7 +68,9 @@ function MainLayout() {
         </div>
       </aside>
 
-      <div className={layoutStyles.content}>
+      <div
+        className={`${layoutStyles.content} ${location.pathname === "/" ? layoutStyles.contentMainPage : ""}`}
+      >
         <header className={headerStyles.header}>
           <div className={headerStyles.headerLeft}>
             <h1 className={headerStyles.greeting}>
@@ -87,10 +105,17 @@ function MainLayout() {
             )}
           </div>
         </header>
+        {showFact && (
+          <div className={headerStyles.factBar}>
+            <span className={headerStyles.factLabel}>Факт дня</span>
+            <span className={headerStyles.factText}>{FACTS[factIndex]}</span>
+          </div>
+        )}
 
         <main className={layoutStyles.main}>
           <Outlet />
         </main>
+        <Footer />
       </div>
     </div>
   );

@@ -16,6 +16,9 @@
   /* Акценты */
   --color-accent: #c45c3e;
   --color-accent-hover: #a84d33;
+  --color-burgundy: #45161C;
+  --color-burgundy-hover: #5c1f28;
+  --color-brown-bg: #DDBEC3;
   --color-accent-dark: #9a4a30;
   --color-accent-soft: rgba(196, 92, 62, 0.12);
   --color-sidebar: #f5f2ed;

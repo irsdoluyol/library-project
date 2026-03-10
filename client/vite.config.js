@@ -14,6 +14,15 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:5050",
         changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on("error", (err, req, res) => {
+            if (err.code === "ECONNREFUSED") {
+              console.log(
+                "\n⚠️  [Vite proxy] Backend недоступен. Запустите сервер:\n   cd server && npm run dev\n"
+              );
+            }
+          });
+        },
       },
     },
   },

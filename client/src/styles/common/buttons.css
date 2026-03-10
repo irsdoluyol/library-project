@@ -14,6 +14,15 @@
 }
 
 .button--primary {
-  background: #f6a800;
-  color: #211b2a;
+  background: var(--color-burgundy);
+  color: #fff;
+}
+
+.button--primary:hover {
+  background: var(--color-burgundy-hover);
+}
+
+.button--sm {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
 }

@@ -30,7 +30,64 @@
 
 .userBadge {
   font-size: 0.9rem;
-  color: var(--color-text-muted);
+  color: var(--color-burgundy);
+  font-weight: 500;
+}
+
+/* Кнопки в хедере — один цвет бордо */
+.headerRight .button--ghost {
+  color: var(--color-burgundy);
+}
+.headerRight .button--ghost:hover {
+  color: var(--color-burgundy-hover);
+  background: rgba(69, 22, 28, 0.08);
+}
+.headerRight .button--primary {
+  background: var(--color-burgundy);
+  color: #fff;
+}
+.headerRight .button--primary:hover {
+  background: var(--color-burgundy-hover);
+  color: #fff;
+}
+
+/* Факт дня — светлая полоска, хорошо заметная */
+.factBar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.5rem;
+  min-height: 3.25rem;
+  background: #EDE5E8;
+  border-top: 1px solid rgba(69, 22, 28, 0.08);
+  animation: factPump 3s ease-in-out infinite;
+}
+
+@keyframes factPump {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(69, 22, 28, 0); }
+  50% { transform: scale(1.005); box-shadow: 0 2px 12px 2px rgba(69, 22, 28, 0.08); }
+}
+
+.factLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-burgundy);
+  flex-shrink: 0;
+}
+
+.factText {
+  font-size: 1.1rem;
+  line-height: 1.45;
+  color: var(--color-text);
+  font-style: italic;
+  animation: factFadeIn 0.4s ease;
+}
+
+@keyframes factFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @media (max-width: 768px) {
@@ -40,5 +97,16 @@
 
   .greeting {
     font-size: 1rem;
+  }
+
+  .factBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    padding: 0.85rem 1rem;
+  }
+
+  .factText {
+    font-size: 1.05rem;
   }
 }

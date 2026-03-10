@@ -9,7 +9,6 @@ import AdminRequestsPage from "./pages/admin/AdminRequestsPage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";
 import RegisterPage from "./pages/auth/RegisterPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
-import AdminLayout from "./layouts/AdminLayout.jsx";
 import PrivateRoute from "./routes/PrivateRoute.jsx";
 import AdminRoute from "./routes/AdminRoute.jsx";
 
@@ -29,7 +28,7 @@ function App() {
         </Route>
 
         <Route element={<AdminRoute />}>
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route path="/admin" element={<MainLayout />}>
             <Route index element={<AdminDashboardPage />} />
             <Route path="requests" element={<AdminRequestsPage />} />
           </Route>
