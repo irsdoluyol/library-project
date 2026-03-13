@@ -12,6 +12,18 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  margin-left: var(--sidebar-width);
+  transition: margin-left 0.25s ease;
+}
+
+.contentSidebarCollapsed {
+  margin-left: var(--sidebar-collapsed, 64px);
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: var(--sidebar-collapsed, 64px);
+  }
 }
 
 /* На главной: бурый #45161C и #DDBEC3 вместо оранжевого акцента */

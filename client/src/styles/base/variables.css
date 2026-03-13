@@ -43,5 +43,5 @@
   /* Ширина сайдбара */
   --sidebar-width: 220px;
   --sidebar-expanded: 220px;
-  --sidebar-collapsed: 72px;
+  --sidebar-collapsed: 64px;
 }

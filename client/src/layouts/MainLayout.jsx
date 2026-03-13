@@ -1,10 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/useAuth.js";
 import Footer from "../components/layout/Footer.jsx";
 import layoutStyles from "./MainLayout.module.css";
 import sidebarStyles from "./Sidebar.module.css";
 import headerStyles from "./Header.module.css";
+import ChevronLeftIcon from "../assets/icons/ChevronLeftIcon.jsx";
 
 const FACTS = [
   "Чтение 6 минут в день снижает стресс на 68%.",
@@ -17,6 +18,7 @@ const FACTS = [
 function MainLayout() {
   const location = useLocation();
   const { user, isAdmin, logout } = useAuth();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const showFact = location.pathname === "/";
   const factIndex = useMemo(() => {
     const today = new Date();
@@ -33,7 +35,20 @@ function MainLayout() {
 
   return (
     <div className={layoutStyles.root}>
-      <aside className={sidebarStyles.sidebar}>
+      <aside
+        className={`${sidebarStyles.sidebar} ${sidebarCollapsed ? sidebarStyles.sidebarCollapsed : ""}`}
+      >
+        <button
+          type="button"
+          className={sidebarStyles.toggle}
+          onClick={() => setSidebarCollapsed((c) => !c)}
+          aria-label={sidebarCollapsed ? "Развернуть меню" : "Свернуть меню"}
+          title={sidebarCollapsed ? "Развернуть меню" : "Свернуть меню"}
+        >
+          <span className={`${sidebarStyles.toggleArrow} ${sidebarCollapsed ? sidebarStyles.toggleArrowCollapsed : ""}`}>
+            <ChevronLeftIcon />
+          </span>
+        </button>
         <Link to="/" className={sidebarStyles.logo}>
           <span className={sidebarStyles.logoText}>Библиотека</span>
         </Link>
@@ -69,7 +84,7 @@ function MainLayout() {
       </aside>
 
       <div
-        className={`${layoutStyles.content} ${location.pathname === "/" ? layoutStyles.contentMainPage : ""}`}
+        className={`${layoutStyles.content} ${location.pathname === "/" ? layoutStyles.contentMainPage : ""} ${sidebarCollapsed ? layoutStyles.contentSidebarCollapsed : ""}`}
       >
         <header className={headerStyles.header}>
           <div className={headerStyles.headerLeft}>
