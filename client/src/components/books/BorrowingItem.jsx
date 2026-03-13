@@ -15,9 +15,10 @@ function BorrowingItem({ borrowing, onReturn, isPending }) {
         {book.filePath && (
           <Link
             to={`/read/${book._id}`}
-            className="button button--primary"
+            className="button button--outline"
           >
-            Читать
+            Читать{" "}
+            <span className={pageStyles.btnArrow} aria-hidden>→</span>
           </Link>
         )}
         <button

@@ -45,3 +45,14 @@
   gap: 0.5rem;
   margin-top: 0.25rem;
 }
+
+.listActions .button--outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btnArrow {
+  font-size: 0.95em;
+  margin-left: 0.1rem;
+}

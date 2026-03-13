@@ -1,37 +1,105 @@
-/* Header — BEM */
+/* Header — BEM: logo left, greeting center, catalog+books+avatar+logout right */
 
 .header {
-  padding: 1.25rem 1.5rem;
+  padding: 1.2rem 1.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1rem;
   flex-wrap: wrap;
   background: var(--color-bg);
   border-bottom: 1px solid var(--color-border);
 }
 
-.header__left {
+/* Без границы, когда под хедером идёт факт дня */
+.headerWithFact {
+  border-bottom: none;
+}
+
+.header__logo {
+  flex-shrink: 0;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 1.3;
+  color: var(--color-burgundy);
+  transition: color 0.2s;
+}
+
+.header__logo:hover {
+  color: var(--color-burgundy-hover);
+}
+
+.header__logoText {
+  color: inherit;
+}
+
+.header__center {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.header__greeting {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #4a4650;
+}
+
+.header__tagline {
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: var(--color-text-muted);
+  font-style: italic;
 }
 
 .header__right {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
+  flex-shrink: 0;
 }
 
-.header__greeting {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.header__userBadge {
+.header__navLink {
   font-size: 0.9rem;
-  color: var(--color-burgundy);
   font-weight: 500;
+  line-height: 1.4;
+  color: #4a4650;
+  text-decoration: none;
+  padding: 0.4rem 0.65rem;
+  border-radius: var(--radius-sm);
+  transition: color 0.2s;
+}
+
+.header__navLink:hover {
+  color: var(--color-burgundy);
+}
+
+.header__navLink--active {
+  color: var(--color-burgundy);
+  font-weight: 600;
+}
+
+/* Круглая иконка без бордера, бордовая буква внутри */
+
+.header__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(237, 212, 216, 0.4);
+  color: var(--color-burgundy);
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .header__right .button--ghost {
@@ -53,61 +121,17 @@
   color: #fff;
 }
 
-.header__factBar {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.9rem 1.5rem;
-  min-height: 3.25rem;
-  background: #EDE5E8;
-  border-top: 1px solid rgba(69, 22, 28, 0.08);
-  animation: headerFactPump 3s ease-in-out infinite;
-}
-
-@keyframes headerFactPump {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(69, 22, 28, 0); }
-  50% { transform: scale(1.005); box-shadow: 0 2px 12px 2px rgba(69, 22, 28, 0.08); }
-}
-
-.header__factLabel {
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-burgundy);
-  flex-shrink: 0;
-}
-
-.header__factText {
-  font-size: 1.1rem;
-  line-height: 1.45;
-  color: var(--color-text);
-  font-style: italic;
-  animation: headerFactFadeIn 0.4s ease;
-}
-
-@keyframes headerFactFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
 @media (max-width: 768px) {
   .header {
     padding: 1rem;
   }
 
+  .header__center {
+    order: 3;
+    width: 100%;
+  }
+
   .header__greeting {
-    font-size: 1rem;
-  }
-
-  .header__factBar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.35rem;
-    padding: 0.85rem 1rem;
-  }
-
-  .header__factText {
-    font-size: 1.05rem;
+    font-size: 0.95rem;
   }
 }

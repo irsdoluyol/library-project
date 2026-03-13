@@ -3,11 +3,31 @@
 .adminPage {
   max-width: 1100px;
   margin: 0 auto;
+  padding-bottom: 2rem;
 }
 
 .formSection {
   max-width: 800px;
   margin: 0 auto;
+}
+
+/* Заголовок страницы — центрирован, компактный отступ */
+
+.pageHeader {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.pageTitle {
+  font-size: 2rem;
+  margin: 0 0 0.35rem;
+  color: var(--color-text);
+}
+
+.pageText {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-text-muted);
 }
 
 /* Разделитель — одинаковое расстояние, линия по центру */

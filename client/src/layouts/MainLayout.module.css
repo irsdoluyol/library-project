@@ -1,5 +1,3 @@
-/* MainLayout — корневой контейнер и основная область (CSS Module) */
-
 .root {
   min-height: 100vh;
   display: flex;
@@ -26,12 +24,61 @@
   }
 }
 
-/* На главной: бурый #45161C и #DDBEC3 вместо оранжевого акцента */
 .contentMainPage {
   --color-accent: var(--color-burgundy);
   --color-accent-hover: var(--color-burgundy-hover);
   --color-accent-soft: var(--color-brown-bg);
   --color-accent-dark: var(--color-burgundy);
+}
+
+.factBar {
+  width: 100%;
+  padding: 0.6rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(221, 190, 195, 0.45);
+  border-top: 1px solid rgba(69, 22, 28, 0.15);
+  border-bottom: 1px solid rgba(69, 22, 28, 0.15);
+  animation: factBarShadow 4s ease-in-out infinite;
+}
+
+@keyframes factBarShadow {
+  0%, 100% {
+    box-shadow: 0 -1px 2px rgba(69, 22, 28, 0.08), 0 1px 2px rgba(69, 22, 28, 0.1);
+  }
+  50% {
+    box-shadow: 0 -2px 4px rgba(69, 22, 28, 0.12), 0 2px 4px rgba(69, 22, 28, 0.15);
+  }
+}
+
+.factLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-burgundy);
+  flex-shrink: 0;
+}
+
+.factText {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: #4a4650;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .factBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    padding: 0.55rem 1rem;
+  }
+
+  .factText {
+    font-size: 0.95rem;
+  }
 }
 
 .main {

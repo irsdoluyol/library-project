@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/useAuth.js";
 import Footer from "../components/layout/Footer.jsx";
+import CatalogSearchBar from "../components/catalog/CatalogSearchBar.jsx";
 import layoutStyles from "./MainLayout.module.css";
 import sidebarStyles from "./Sidebar.module.css";
 import headerStyles from "./Header.module.css";
@@ -13,6 +14,53 @@ const FACTS = [
   "Самый длинный роман — «Люди доброй воли» М. Ромена: 2 млн слов.",
   "Библиотека Александрии хранила около 700 000 свитков.",
   "Книги увеличивают словарный запас на 20%.",
+  "Первая печатная книга — Библия Гутенберга (1455).",
+  "Самый читающий город России — Санкт-Петербург.",
+  "Дети, которые читают 20 минут в день, узнают 1,8 млн слов в год.",
+  "Электронные книги экономят до 67% воды при производстве.",
+  "В Японии книги читают в среднем 4 часа в неделю.",
+  "Бумага изобретена в Китае во II веке до н. э.",
+  "Самый популярный жанр в мире — романтика.",
+  "Чтение перед сном улучшает качество сна.",
+  "В Финляндии 80% семей посещают библиотеку.",
+  "Книга рекордов Гиннесса — самая крадомая книга в библиотеках.",
+  "Первый роман — «Гэндзи-моногатари» (XI век, Япония).",
+  "Чтение замедляет развитие деменции.",
+  "В Исландии на Рождество дарят книги.",
+  "Средняя длина романа — 80 000–100 000 слов.",
+  "Библиотека Конгресса — крупнейшая в мире (170+ млн единиц).",
+  "Аудиокниги активируют те же области мозга, что и чтение.",
+  "В XIX веке книги красили зелёной краской с мышьяком.",
+  "Самый длинный палиндром — роман «Сатана, носи сатану».",
+  "Чтение повышает эмпатию.",
+  "В Корее дети читают в среднем 11 книг в год.",
+  "Первая библиотека в России — при Софийском соборе (1037).",
+  "Книги на полках живут дольше, чем в коробках.",
+  "Чтение 30 минут в день продлевает жизнь на 2 года.",
+  "В Норвегии государство дарит книги первоклассникам.",
+  "Самый маленький роман — 6 слов Эрнеста Хемингуэя.",
+  "Библиотерапия — лечение с помощью книг.",
+  "В среднем человек тратит 6 часов в неделю на чтение.",
+  "Книги-раскладушки появились в XIII веке.",
+  "Чтение снижает уровень кортизола.",
+  "В Швеции есть закон о поддержке книгоиздания.",
+  "Самый переводимый автор — Агата Кристи.",
+  "Книги помогают развивать критическое мышление.",
+  "В Индии печатают больше всего книг на хинди.",
+  "Чтение вслух укрепляет связи в семье.",
+  "Первая книга на русском — «Апостол» (1564).",
+  "Библиотеки существуют более 4000 лет.",
+  "Чтение улучшает концентрацию внимания.",
+  "В Германии книги имеют фиксированную цену.",
+  "Самый продаваемый роман — «Повесть о двух городах» Диккенса.",
+  "Книги снижают тревожность лучше, чем музыка.",
+  "В Египте была библиотека в Александрии.",
+  "Чтение расширяет словарный запас на 50%.",
+  "Книги-бестселлеры составляют 1% от всех изданий.",
+  "В Канаде библиотеки выдают семена для огорода.",
+  "Чтение перед экраном снижает вред синего света.",
+  "Самый старый текст — «Эпос о Гильгамеше» (XVIII в. до н. э.).",
+  "Книги делают людей более открытыми новому.",
 ];
 
 function MainLayout() {
@@ -85,21 +133,41 @@ function MainLayout() {
 
       <div
         className={`${layoutStyles.content} ${location.pathname === "/" ? layoutStyles.contentMainPage : ""} ${sidebarCollapsed ? layoutStyles.contentSidebarCollapsed : ""}`}
+        data-sidebar-collapsed={sidebarCollapsed || undefined}
       >
-        <header className={headerStyles.header}>
-          <div className={headerStyles.headerLeft}>
-            <h1 className={headerStyles.greeting}>
-              {user
-                ? `Доброе чтение, ${user.name || "читатель"}!`
-                : "Добро пожаловать в библиотеку"}
-            </h1>
+        <header className={`${headerStyles.header} ${showFact ? headerStyles.headerWithFact : ""}`}>
+          <Link to="/" className={headerStyles.header__logo}>
+            <span className={headerStyles.header__logoText}>Библиотека</span>
+          </Link>
+
+          <div className={headerStyles.header__center}>
+            <span className={headerStyles.header__greeting}>
+              Добро пожаловать, {user ? [user.name, user.surname].filter(Boolean).join(" ") || user.email : "Вход"}!
+            </span>
+            <span className={headerStyles.header__tagline}>Читайте с удовольствием</span>
           </div>
-          <div className={headerStyles.headerRight}>
+
+          <div className={headerStyles.header__right}>
+            <Link
+              to="/"
+              className={`${headerStyles.header__navLink} ${location.pathname === "/" ? headerStyles["header__navLink--active"] : ""}`}
+            >
+              Каталог
+            </Link>
+            <Link
+              to="/my-books"
+              className={`${headerStyles.header__navLink} ${location.pathname.startsWith("/my-books") ? headerStyles["header__navLink--active"] : ""}`}
+            >
+              Мои книги
+            </Link>
             {user ? (
               <>
-                <span className={headerStyles.userBadge}>
-                  {[user.name, user.surname].filter(Boolean).join(" ") || user.email}
-                </span>
+                <div
+                  className={headerStyles.header__avatar}
+                  title={[user.name, user.surname].filter(Boolean).join(" ") || user.email}
+                >
+                  {(user.name?.[0] || user.email?.[0] || "?").toUpperCase()}
+                </div>
                 <button
                   type="button"
                   className="button button--ghost button--sm"
@@ -121,11 +189,13 @@ function MainLayout() {
           </div>
         </header>
         {showFact && (
-          <div className={headerStyles.factBar}>
-            <span className={headerStyles.factLabel}>Факт дня</span>
-            <span className={headerStyles.factText}>{FACTS[factIndex]}</span>
+          <div className={layoutStyles.factBar}>
+            <span className={layoutStyles.factLabel}>Факт дня</span>
+            <span className={layoutStyles.factText}>{FACTS[factIndex]}</span>
           </div>
         )}
+
+        {showFact && <CatalogSearchBar />}
 
         <main className={layoutStyles.main}>
           <Outlet />

@@ -1,5 +1,3 @@
-/** Простые SVG-иконки для навигации и UI */
-
 const iconStyle = { width: 24, height: 24, fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" };
 
 export function IconHome() {

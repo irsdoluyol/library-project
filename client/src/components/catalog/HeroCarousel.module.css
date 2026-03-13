@@ -1,0 +1,149 @@
+.carousel {
+  width: 100%;
+  margin-top: -0.4rem;
+  margin-bottom: 1.5rem;
+  border-radius: var(--radius-lg);
+}
+
+.viewportWrap {
+  position: relative;
+  border-radius: var(--radius-lg);
+}
+
+.viewport {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+.container {
+  display: flex;
+  padding: 0 0.25rem;
+  touch-action: pan-y pinch-zoom;
+}
+
+.slide {
+  flex: 0 0 60%;
+  min-width: 0;
+  margin-right: 0.5rem;
+  aspect-ratio: 16/9;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: box-shadow 0.3s;
+}
+
+.slide:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.slideImage {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.slideContent {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 1.5rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.5) 100%);
+  color: #fff;
+  text-align: left;
+}
+
+.slideTitle {
+  margin: 0 0 0.35rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.slideText {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  opacity: 0.95;
+}
+
+.slideBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+  border: 1.5px solid #fff;
+  background: rgba(255,255,255,0.2);
+}
+
+.slideBtn:hover {
+  background: rgba(255,255,255,0.35);
+  color: #fff;
+  border-color: #fff;
+}
+
+.btnArrow {
+  font-size: 0.95em;
+  margin-left: 0.1rem;
+}
+
+.nav {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  z-index: 10;
+  padding: 0.25rem 0.45rem;
+  border-radius: var(--radius-full);
+  background: transparent;
+}
+
+.navBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.navBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s;
+}
+
+.dot:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.dotActive {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.85);
+}

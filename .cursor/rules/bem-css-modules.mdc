@@ -1,0 +1,56 @@
+---
+description: BEM + CSS Modules — стили должны быть модульными и следовать BEM
+globs: "**/*.module.css"
+alwaysApply: false
+---
+
+# BEM в CSS Modules
+
+Все стили компонентов пишутся в **CSS Modules** (`.module.css`) и следуют **BEM**:
+
+- **Block** — корневой элемент (например, `bookForm`)
+- **Element** — часть блока: `block__element`
+- **Modifier** — вариация: `block__element--modifier` или `block--modifier`
+
+## Пример
+
+```css
+/* Block */
+.bookForm {
+  padding: 0;
+}
+
+/* Element */
+.bookForm__title {
+  font-size: 1.6rem;
+}
+
+.bookForm__grid {
+  display: grid;
+}
+
+.bookForm__input {
+  padding: 0.5rem 1rem;
+}
+
+/* Modifier */
+.bookForm__input--textarea {
+  min-height: 120px;
+}
+```
+
+## В JSX
+
+```jsx
+<div className={styles.bookForm}>
+  <h2 className={styles.bookForm__title}>Заголовок</h2>
+  <input className={styles.bookForm__input} />
+  <textarea className={`${styles.bookForm__input} ${styles.bookForm__input--textarea}`} />
+</div>
+```
+
+## Правила
+
+- Один блок = один компонент (один `.module.css` файл)
+- Не использовать глобальные классы для стилей компонента — только для общих утилит (button, page)
+- Вложенность в CSS: `.block__element .block__child` — допустимо, но предпочтительнее плоская структура

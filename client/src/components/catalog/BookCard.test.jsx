@@ -20,7 +20,7 @@ describe("BookCard", () => {
     render(
       <BookCard book={defaultBook} isLoggedIn onBorrow={vi.fn()} pendingBorrowId={null} />
     );
-    expect(screen.getByRole("button", { name: /взять/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /читать/i })).toBeTruthy();
   });
 
   it("shows unavailable text when book is not available", () => {
@@ -40,13 +40,13 @@ describe("BookCard", () => {
     render(
       <BookCard book={defaultBook} isLoggedIn onBorrow={onBorrow} pendingBorrowId={null} />
     );
-    fireEvent.click(screen.getByRole("button", { name: /взять/i }));
+    fireEvent.click(screen.getByRole("button", { name: /читать/i }));
     expect(onBorrow).toHaveBeenCalledWith("1");
   });
 
   it("does not show actions when user is not logged in", () => {
     render(<BookCard book={defaultBook} isLoggedIn={false} />);
-    expect(screen.queryByRole("button", { name: /взять/i })).toBeNull();
+    expect(screen.queryByRole("button", { name: /читать/i })).toBeNull();
     expect(screen.queryByText("Недоступно")).toBeNull();
   });
 });

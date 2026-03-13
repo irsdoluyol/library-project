@@ -49,10 +49,12 @@ function AdminDashboardPage() {
   return (
     <section className={`${pageStyles.page} ${styles.adminPage}`}>
       <div className={styles.formSection}>
-        <h1 className={pageStyles.title}>Панель администратора</h1>
-        <p className={pageStyles.text}>
-          Управление каталогом: добавление, редактирование и удаление книг.
-        </p>
+        <header className={styles.pageHeader}>
+          <h1 className={styles.pageTitle}>Панель администратора</h1>
+          <p className={styles.pageText}>
+            Управление каталогом: добавление, редактирование и удаление книг.
+          </p>
+        </header>
 
         {error && <p className="auth__error">{error}</p>}
 

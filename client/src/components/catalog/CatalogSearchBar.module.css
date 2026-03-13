@@ -1,0 +1,126 @@
+.searchBar {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  margin-top: 0.5rem;
+  background: var(--color-bg);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.searchBar__input {
+  flex: 1;
+  min-width: 180px;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-input);
+  color: var(--color-text);
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.searchBar__input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.searchBar__input:focus {
+  outline: none;
+  border: 1px solid var(--color-burgundy);
+}
+
+.searchBar__genreWrap {
+  position: relative;
+}
+
+.searchBar__genreBtn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 140px;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-input);
+  color: var(--color-text);
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.searchBar__genreBtn:hover {
+  border-color: rgba(69, 22, 28, 0.3);
+}
+
+.searchBar__genreBtn--open,
+.searchBar__genreBtn:focus {
+  outline: none;
+  border: 1px solid var(--color-burgundy);
+}
+
+.searchBar__genreArrow {
+  flex-shrink: 0;
+  color: var(--color-burgundy);
+  transition: transform 0.2s;
+}
+
+.searchBar__genreBtn--open .searchBar__genreArrow {
+  transform: rotate(180deg);
+}
+
+.searchBar__genreList {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  min-width: 220px;
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.searchBar__genreItem {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.searchBar__genreItem:hover {
+  background: rgba(69, 22, 28, 0.06);
+  color: var(--color-burgundy);
+}
+
+.searchBar__genreItem--active {
+  background: rgba(69, 22, 28, 0.08);
+  color: var(--color-burgundy);
+  font-weight: 500;
+}
+
+.searchBar__findBtn {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-burgundy);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.searchBar__findBtn:hover {
+  background: var(--color-burgundy-hover);
+}
