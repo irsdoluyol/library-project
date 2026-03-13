@@ -6,6 +6,7 @@ import {
   updateBook,
   deleteBook,
   uploadBookFile,
+  uploadBookCover,
 } from "../api/booksApi.js";
 
 const emptyForm = {
@@ -60,6 +61,26 @@ export function useAdminBooks() {
       year: book.year ? String(book.year) : "",
       description: book.description || "",
     });
+  };
+
+  const handleUploadCover = async (id, file) => {
+    if (!file) return;
+    const ext = (file.name || "").toLowerCase();
+    if (![".jpg", ".jpeg", ".png", ".webp"].some((e) => ext.endsWith(e))) {
+      toast.error("Допустимы только JPG, PNG, WebP");
+      return;
+    }
+    try {
+      setError("");
+      setSaving(true);
+      const { book } = await uploadBookCover(id, file);
+      setBooks((prev) => prev.map((b) => (b._id === book._id ? book : b)));
+      toast.success("Обложка загружена");
+    } catch (err) {
+      toast.error(err.message || "Ошибка загрузки обложки");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleUpload = async (id, file) => {
@@ -144,6 +165,7 @@ export function useAdminBooks() {
     handleEdit,
     handleDelete,
     handleUpload,
+    handleUploadCover,
     handleSubmit,
   };
 }

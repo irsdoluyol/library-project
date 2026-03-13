@@ -13,7 +13,7 @@ import bookRoutes from "./routes/bookRoutes.js";
 import requestRoutes from "./routes/requestRoutes.js";
 
 if (process.env.NODE_ENV !== "test") {
-  dotenv.config();
+  dotenv.config({ quiet: true });
 }
 validateEnv();
 

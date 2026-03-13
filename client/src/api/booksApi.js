@@ -34,6 +34,24 @@ export async function deleteBook(id) {
   return request(`/books/${id}`, { method: "DELETE" });
 }
 
+export function getCoverUrl(bookId) {
+  return `${API_URL}/books/${bookId}/cover`;
+}
+
+export async function uploadBookCover(bookId, file) {
+  const formData = new FormData();
+  formData.append("cover", file);
+  const url = `${API_URL}/books/${bookId}/cover`;
+  const response = await fetch(url, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data?.message || "Ошибка загрузки обложки");
+  return data;
+}
+
 export async function borrowBook(bookId) {
   return request(`/books/${bookId}/borrow`, { method: "POST" });
 }

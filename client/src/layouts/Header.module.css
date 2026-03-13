@@ -1,4 +1,4 @@
-/* Шапка — приветствие и действия пользователя (CSS Module) */
+/* Header — BEM */
 
 .header {
   padding: 1.25rem 1.5rem;
@@ -11,48 +11,49 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-.headerLeft {
+.header__left {
   flex: 1;
 }
 
-.headerRight {
+.header__right {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.greeting {
+.header__greeting {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-text);
 }
 
-.userBadge {
+.header__userBadge {
   font-size: 0.9rem;
   color: var(--color-burgundy);
   font-weight: 500;
 }
 
-/* Кнопки в хедере — один цвет бордо */
-.headerRight .button--ghost {
+.header__right .button--ghost {
   color: var(--color-burgundy);
 }
-.headerRight .button--ghost:hover {
+
+.header__right .button--ghost:hover {
   color: var(--color-burgundy-hover);
   background: rgba(69, 22, 28, 0.08);
 }
-.headerRight .button--primary {
+
+.header__right .button--primary {
   background: var(--color-burgundy);
   color: #fff;
 }
-.headerRight .button--primary:hover {
+
+.header__right .button--primary:hover {
   background: var(--color-burgundy-hover);
   color: #fff;
 }
 
-/* Факт дня — светлая полоска, хорошо заметная */
-.factBar {
+.header__factBar {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -60,15 +61,15 @@
   min-height: 3.25rem;
   background: #EDE5E8;
   border-top: 1px solid rgba(69, 22, 28, 0.08);
-  animation: factPump 3s ease-in-out infinite;
+  animation: headerFactPump 3s ease-in-out infinite;
 }
 
-@keyframes factPump {
+@keyframes headerFactPump {
   0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(69, 22, 28, 0); }
   50% { transform: scale(1.005); box-shadow: 0 2px 12px 2px rgba(69, 22, 28, 0.08); }
 }
 
-.factLabel {
+.header__factLabel {
   font-size: 0.85rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -77,15 +78,15 @@
   flex-shrink: 0;
 }
 
-.factText {
+.header__factText {
   font-size: 1.1rem;
   line-height: 1.45;
   color: var(--color-text);
   font-style: italic;
-  animation: factFadeIn 0.4s ease;
+  animation: headerFactFadeIn 0.4s ease;
 }
 
-@keyframes factFadeIn {
+@keyframes headerFactFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
@@ -95,18 +96,18 @@
     padding: 1rem;
   }
 
-  .greeting {
+  .header__greeting {
     font-size: 1rem;
   }
 
-  .factBar {
+  .header__factBar {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.35rem;
     padding: 0.85rem 1rem;
   }
 
-  .factText {
+  .header__factText {
     font-size: 1.05rem;
   }
 }

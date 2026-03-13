@@ -27,6 +27,10 @@ const bookSchema = new mongoose.Schema(
       type: String,
       enum: ["pdf", "txt"],
     },
+    coverPath: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );

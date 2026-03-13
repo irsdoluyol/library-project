@@ -36,23 +36,23 @@ function MainLayout() {
   return (
     <div className={layoutStyles.root}>
       <aside
-        className={`${sidebarStyles.sidebar} ${sidebarCollapsed ? sidebarStyles.sidebarCollapsed : ""}`}
+        className={`${sidebarStyles.sidebar} ${sidebarCollapsed ? sidebarStyles["sidebar--collapsed"] : ""}`}
       >
         <button
           type="button"
-          className={sidebarStyles.toggle}
+          className={sidebarStyles.sidebar__toggle}
           onClick={() => setSidebarCollapsed((c) => !c)}
           aria-label={sidebarCollapsed ? "Развернуть меню" : "Свернуть меню"}
           title={sidebarCollapsed ? "Развернуть меню" : "Свернуть меню"}
         >
-          <span className={`${sidebarStyles.toggleArrow} ${sidebarCollapsed ? sidebarStyles.toggleArrowCollapsed : ""}`}>
+          <span className={`${sidebarStyles.sidebar__toggleArrow} ${sidebarCollapsed ? sidebarStyles["sidebar__toggleArrow--collapsed"] : ""}`}>
             <ChevronLeftIcon />
           </span>
         </button>
-        <Link to="/" className={sidebarStyles.logo}>
-          <span className={sidebarStyles.logoText}>Библиотека</span>
+        <Link to="/" className={sidebarStyles.sidebar__logo}>
+          <span className={sidebarStyles.sidebar__logoText}>Библиотека</span>
         </Link>
-        <nav className={sidebarStyles.nav}>
+        <nav className={sidebarStyles.sidebar__nav}>
           {navItems.map(({ to, label }) => {
             const isActive =
               to === "/"
@@ -62,20 +62,20 @@ function MainLayout() {
               <Link
                 key={to}
                 to={to}
-                className={`${sidebarStyles.navItem} ${isActive ? sidebarStyles.navItemActive : ""}`}
+                className={`${sidebarStyles.sidebar__navItem} ${isActive ? sidebarStyles["sidebar__navItem--active"] : ""}`}
               >
                 {label}
               </Link>
             );
           })}
         </nav>
-        <div className={sidebarStyles.footer}>
+        <div className={sidebarStyles.sidebar__footer}>
           {user ? (
-            <div className={sidebarStyles.user}>
-              <div className={sidebarStyles.avatar}>
+            <div className={sidebarStyles.sidebar__user}>
+              <div className={sidebarStyles.sidebar__avatar}>
                 {(user.name?.[0] || user.email?.[0] || "?").toUpperCase()}
               </div>
-              <span className={sidebarStyles.userName}>
+              <span className={sidebarStyles.sidebar__userName}>
                 {[user.name, user.surname].filter(Boolean).join(" ") || user.email}
               </span>
             </div>

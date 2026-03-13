@@ -1,0 +1,82 @@
+/* AdminBookForm — BEM, без фона, мягкие углы */
+
+/* Block */
+.bookForm {
+  background: transparent;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+/* Elements */
+.bookForm__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.bookForm__title {
+  grid-column: 1 / -1;
+}
+
+.bookForm__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.bookForm__field:nth-of-type(5) {
+  grid-column: 1 / -1;
+}
+
+.bookForm__label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-text-muted, #6c647c);
+  line-height: 1.4;
+}
+
+.bookForm__input {
+  min-width: 100%;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  background: var(--color-bg-input);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.bookForm__input:focus {
+  outline: none;
+  border: 1px solid var(--color-burgundy);
+}
+
+.bookForm__input--textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.bookForm__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-start;
+  margin-top: -0.35rem;
+}
+
+.bookForm__submit {
+  width: auto;
+  padding: 0.63rem 1.58rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.bookForm__actions :global(.button--ghost) {
+  padding: 0.47rem 1.16rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+}

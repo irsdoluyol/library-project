@@ -1,4 +1,4 @@
-/* Сайдбар — левая навигация, градиент бурого + фон (CSS Module) */
+/* Sidebar — BEM */
 
 .sidebar {
   position: fixed;
@@ -24,18 +24,18 @@
   transition: width 0.25s ease;
 }
 
-.sidebarCollapsed {
+.sidebar--collapsed {
   width: var(--sidebar-collapsed, 64px);
   padding: 1rem 0;
 }
 
-.sidebarCollapsed .logo,
-.sidebarCollapsed .nav,
-.sidebarCollapsed .footer {
+.sidebar--collapsed .sidebar__logo,
+.sidebar--collapsed .sidebar__nav,
+.sidebar--collapsed .sidebar__footer {
   display: none;
 }
 
-.toggle {
+.sidebar__toggle {
   position: absolute;
   right: -16px;
   top: 50%;
@@ -56,12 +56,12 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 }
 
-.toggle:hover {
+.sidebar__toggle:hover {
   background: linear-gradient(135deg, rgba(92, 36, 42, 0.98), rgba(80, 30, 36, 0.95));
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
-.toggleArrow {
+.sidebar__toggleArrow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -69,11 +69,11 @@
   transition: transform 0.3s ease;
 }
 
-.toggleArrowCollapsed {
+.sidebar__toggleArrow--collapsed {
   transform: rotate(180deg);
 }
 
-.logo {
+.sidebar__logo {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -85,19 +85,19 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
-.logoText {
+.sidebar__logoText {
   font-size: 0.85rem;
   color: inherit;
 }
 
-.nav {
+.sidebar__nav {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   flex: 1;
 }
 
-.navItem {
+.sidebar__navItem {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -111,36 +111,36 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 
-.navItem:hover {
+.sidebar__navItem:hover {
   background: rgba(255, 255, 255, 0.18);
   color: #fff;
 }
 
-.navItemActive {
+.sidebar__navItem--active {
   background: rgba(221, 190, 195, 0.35);
   color: #fff;
   font-weight: 500;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.navItemActive:hover {
+.sidebar__navItem--active:hover {
   background: rgba(221, 190, 195, 0.45);
   color: #fff;
 }
 
-.footer {
+.sidebar__footer {
   margin-top: auto;
   padding-top: 1rem;
 }
 
-.user {
+.sidebar__user {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
 }
 
-.avatar {
+.sidebar__avatar {
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -154,7 +154,7 @@
   font-size: 0.85rem;
 }
 
-.userName {
+.sidebar__userName {
   font-size: 0.75rem;
   color: #e2d9ce;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
@@ -170,12 +170,12 @@
     padding: 1rem 0;
   }
 
-  .logoText,
-  .userName {
+  .sidebar__logoText,
+  .sidebar__userName {
     display: none;
   }
 
-  .navItem {
+  .sidebar__navItem {
     padding: 0.5rem;
     font-size: 0.75rem;
   }

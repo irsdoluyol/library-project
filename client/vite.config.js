@@ -15,7 +15,7 @@ export default defineConfig({
         target: "http://localhost:5050",
         changeOrigin: true,
         configure: (proxy) => {
-          proxy.on("error", (err, req, res) => {
+          proxy.on("error", (err) => {
             if (err.code === "ECONNREFUSED") {
               console.log(
                 "\n⚠️  [Vite proxy] Backend недоступен. Запустите сервер:\n   cd server && npm run dev\n"

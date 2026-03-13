@@ -1,0 +1,50 @@
+/* Страница админки — форма узкая, таблица шире */
+
+.adminPage {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.formSection {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Разделитель — одинаковое расстояние, линия по центру */
+
+.catalogSection {
+  position: relative;
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+}
+
+.catalogSection::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 98%;
+  max-width: 1000px;
+  border-top: 1px solid var(--color-border);
+}
+
+/* «Каталог» и поиск — начало на одном уровне (max-width 800px как у формы) */
+
+.catalogInner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Единые стили заголовков секций: «Добавить книгу» и «Каталог» */
+
+.adminSectionHeading {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.75rem;
+}
+
+.catalogHeading {
+  margin-top: 0;
+}

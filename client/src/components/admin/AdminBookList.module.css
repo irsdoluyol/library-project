@@ -1,11 +1,158 @@
-/* AdminBookList — список книг в админке */
+/* AdminBookList — BEM */
 
-.fileBadge {
-  margin-left: 0.5rem;
-  font-size: 0.85rem;
+.bookList {
+  margin-top: 1rem;
+}
+
+.bookList__searchRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.bookList__searchInput {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  background: var(--color-bg);
+  transition: border-color 0.2s;
+}
+
+.bookList__searchInput:focus {
+  outline: none;
+  border: 1px solid var(--color-burgundy);
+}
+
+.bookList__searchBtn {
+  padding: 0.525rem 1.05rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: var(--color-burgundy, #7c2d37);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.bookList__searchBtn:hover {
+  background: var(--color-burgundy-hover, #9a3a46);
+}
+
+.bookList__count {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.bookList__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.bookList__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.bookList__item:hover {
+  background: var(--color-sidebar-hover);
+}
+
+.bookList__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.bookList__title {
+  font-weight: 500;
+}
+
+.bookList__meta {
+  font-size: 0.9rem;
   color: var(--color-text-muted);
 }
 
-.upload {
+.bookList__uploads {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.bookList__actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.bookList__fileIcon {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #2e7d32;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+}
+
+.bookList__coverCell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bookList__coverImg {
+  width: 40px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.bookList__coverUpload,
+.bookList__fileUpload {
   cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--color-burgundy, #7c2d37);
+}
+
+.bookList__coverUpload:hover,
+.bookList__fileUpload:hover {
+  text-decoration: underline;
+}
+
+.bookList__coverCheck {
+  color: var(--color-burgundy);
+  font-weight: bold;
+}
+
+.bookList__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.bookList__pageInfo {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.bookList :global(.button--ghost) {
+  padding: 0.47rem 1.16rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
 }

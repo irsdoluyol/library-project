@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import Book from "../models/Book.js";
 import Borrowing from "../models/Borrowing.js";
-import { uploadDir } from "../config/multer.js";
+import { uploadDir, coverDir } from "../config/multer.js";
 import { logCatalog, logBorrowing } from "../utils/logger.js";
 import { escapeRegex } from "../utils/escapeRegex.js";
 
@@ -134,6 +134,9 @@ export const deleteBook = async (req, res) => {
     if (book.filePath && fs.existsSync(book.filePath)) {
       fs.unlinkSync(book.filePath);
     }
+    if (book.coverPath && fs.existsSync(book.coverPath)) {
+      fs.unlinkSync(book.coverPath);
+    }
 
     await Book.findByIdAndDelete(req.params.id);
 
@@ -233,13 +236,57 @@ export const uploadBookFile = async (req, res) => {
     res.json({ message: "Файл загружен", book });
   } catch (error) {
     if (req.file?.path && fs.existsSync(req.file.path)) {
-      try {
-        fs.unlinkSync(req.file.path);
-      } catch {}
+      try { fs.unlinkSync(req.file.path); } catch {}
     }
     console.error("[uploadBookFile]", error);
     const msg = error.message || "Ошибка загрузки файла";
     res.status(500).json({ message: msg });
+  }
+};
+
+export const uploadCover = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!req.file) {
+      return res.status(400).json({ message: "Выберите изображение (JPG, PNG, WebP)" });
+    }
+
+    const book = await Book.findById(id);
+    if (!book) {
+      fs.unlink(req.file.path, () => {});
+      return res.status(404).json({ message: "Книга не найдена" });
+    }
+
+    if (book.coverPath && fs.existsSync(book.coverPath)) {
+      fs.unlinkSync(book.coverPath);
+    }
+
+    book.coverPath = req.file.path;
+    await book.save();
+
+    res.json({ message: "Обложка загружена", book });
+  } catch (error) {
+    if (req.file?.path && fs.existsSync(req.file.path)) {
+      try { fs.unlinkSync(req.file.path); } catch {}
+    }
+    console.error("[uploadCover]", error);
+    res.status(500).json({ message: error.message || "Ошибка загрузки обложки" });
+  }
+};
+
+export const getCover = async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book?.coverPath || !fs.existsSync(book.coverPath)) {
+      return res.status(404).json({ message: "Обложка не найдена" });
+    }
+
+    const ext = path.extname(book.coverPath).toLowerCase();
+    const types = { ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp" };
+    res.setHeader("Content-Type", types[ext] || "image/jpeg");
+    fs.createReadStream(book.coverPath).pipe(res);
+  } catch (error) {
+    res.status(500).json({ message: "Ошибка чтения обложки" });
   }
 };
 
