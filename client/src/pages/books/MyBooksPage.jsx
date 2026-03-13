@@ -4,6 +4,8 @@ import { useAuth } from "../../context/useAuth.js";
 import { fetchMyBooks, returnBook } from "../../api/booksApi.js";
 import { useAsyncLoad } from "../../hooks/useAsyncLoad.js";
 import BorrowingItem from "../../components/books/BorrowingItem.jsx";
+import PageWithHeader from "../../components/common/PageWithHeader.jsx";
+import ContentState from "../../components/common/ContentState.jsx";
 import pageStyles from "../../styles/common/Page.module.css";
 
 function MyBooksPage() {
@@ -12,10 +14,11 @@ function MyBooksPage() {
   const [pendingReturnId, setPendingReturnId] = useState(null);
   const [returnError, setReturnError] = useState("");
 
-  const { data: items = [], loading, error } = useAsyncLoad(
+  const { data, loading, error } = useAsyncLoad(
     () => (user ? fetchMyBooks() : Promise.resolve([])),
     [user, refreshTrigger]
   );
+  const items = data ?? [];
 
   const handleReturn = async (bookId) => {
     if (!user) return;
@@ -33,19 +36,16 @@ function MyBooksPage() {
     }
   };
 
+  const displayError = error || returnError;
+
   return (
-    <section className={pageStyles.page}>
-      <h1 className={pageStyles.title}>Мои книги</h1>
-      {(error || returnError) && (
-        <p className={pageStyles.text}>{error || returnError}</p>
-      )}
-      {loading ? (
-        <p className={pageStyles.text}>Загрузка...</p>
-      ) : items.length === 0 ? (
-        <p className={pageStyles.text}>
-          У вас пока нет выданных книг.
-        </p>
-      ) : (
+    <PageWithHeader title="Мои книги">
+      <ContentState
+        error={displayError}
+        loading={loading}
+        isEmpty={items.length === 0}
+        emptyText="У вас пока нет выданных книг."
+      >
         <ul className={pageStyles.list}>
           {items.map((borrowing) => (
             <BorrowingItem
@@ -56,8 +56,8 @@ function MyBooksPage() {
             />
           ))}
         </ul>
-      )}
-    </section>
+      </ContentState>
+    </PageWithHeader>
   );
 }
 

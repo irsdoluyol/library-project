@@ -12,8 +12,9 @@
 
 .bookList__searchInput {
   flex: 1;
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
+  padding: 0.6rem 0.9rem;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 6px;
   background: var(--color-bg);
@@ -27,7 +28,8 @@
 
 .bookList__searchBtn {
   padding: 0.525rem 1.05rem;
-  font-size: 0.9rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
   font-weight: 600;
   background: var(--color-burgundy, #7c2d37);
   color: white;
@@ -41,8 +43,9 @@
 }
 
 .bookList__count {
+  font-family: var(--font-body);
   color: var(--color-text-muted);
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin-bottom: 1rem;
 }
 
@@ -74,11 +77,14 @@
 }
 
 .bookList__title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
   font-weight: 500;
 }
 
 .bookList__meta {
-  font-size: 0.9rem;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
   color: var(--color-text-muted);
 }
 
@@ -121,7 +127,7 @@
 .bookList__coverUpload,
 .bookList__fileUpload {
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: var(--color-burgundy, #7c2d37);
 }
 
@@ -144,7 +150,8 @@
 }
 
 .bookList__pageInfo {
-  font-size: 0.9rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
   color: var(--color-text-muted);
 }
 

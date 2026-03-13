@@ -1,4 +1,15 @@
-/* AdminRequestsPage — список обращений */
+/* AdminRequestsPage — список обращений (как в админе «Добавить книгу») */
+
+.wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.error {
+  color: var(--color-error, #c7254e);
+  font-size: 0.95rem;
+  margin: 0 0 1rem;
+}
 
 .table {
   display: flex;
@@ -22,20 +33,25 @@
 }
 
 .itemSubject {
+  font-family: var(--font-heading);
   font-weight: 600;
+  font-size: 1.05rem;
   color: var(--color-text);
 }
 
 .itemAuthor {
-  font-size: 0.9rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
   color: var(--color-text-muted);
 }
 
 .itemMessage {
   margin: 0 0 1rem;
-  font-size: 0.95rem;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
   color: var(--color-text-muted);
   white-space: pre-wrap;
+  line-height: 1.5;
 }
 
 .itemFooter {
@@ -46,11 +62,17 @@
 }
 
 .itemDate {
-  font-size: 0.85rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
   color: var(--color-text-muted);
 }
 
 .itemSelect {
+  font-family: var(--font-body);
   min-width: 140px;
-  padding: 0.4rem 0.75rem;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-input);
 }

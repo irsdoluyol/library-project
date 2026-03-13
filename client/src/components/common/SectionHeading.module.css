@@ -1,0 +1,13 @@
+/* Общий заголовок секции: Популярное, Каталог, Добавить книгу */
+
+.sectionHeading {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+  margin: 0 0 0.75rem;
+}
+
+.sectionHeading--center {
+  text-align: center;
+}

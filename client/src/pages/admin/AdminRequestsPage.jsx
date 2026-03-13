@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useAuth } from "../../context/useAuth.js";
 import { fetchAllRequests, updateRequestStatus } from "../../api/requestsApi.js";
 import { useAsyncLoad } from "../../hooks/useAsyncLoad.js";
-import pageStyles from "../../styles/common/Page.module.css";
+import PageWithHeader from "../../components/common/PageWithHeader.jsx";
+import ContentState from "../../components/common/ContentState.jsx";
 import styles from "./AdminRequestsPage.module.css";
 
 const STATUS_OPTIONS = [
@@ -43,20 +44,19 @@ function AdminRequestsPage() {
   };
 
   return (
-    <section className={pageStyles.page}>
-      <h1 className={pageStyles.title}>Обращения пользователей</h1>
-      <p className={pageStyles.text}>
-        Просмотр и управление статусами обращений в службу поддержки.
-      </p>
+    <PageWithHeader
+      title="Обращения пользователей"
+      description="Просмотр и управление статусами обращений в службу поддержки."
+    >
+      <div className={styles.wrapper}>
+        {error && <p className={styles.error}>{error}</p>}
 
-      {error && <p className="auth__error">{error}</p>}
-
-      {loading ? (
-        <p className={pageStyles.text}>Загрузка...</p>
-      ) : requests.length === 0 ? (
-        <p className={pageStyles.text}>Обращений пока нет.</p>
-      ) : (
-        <div className={styles.table}>
+        <ContentState
+          loading={loading}
+          isEmpty={!loading && requests.length === 0}
+          emptyText="Обращений пока нет."
+        >
+          <div className={styles.table}>
           {requests.map((r) => (
             <div key={r._id} className={styles.item}>
               <div className={styles.itemHeader}>
@@ -83,9 +83,10 @@ function AdminRequestsPage() {
               </div>
             </div>
           ))}
-        </div>
-      )}
-    </section>
+          </div>
+        </ContentState>
+      </div>
+    </PageWithHeader>
   );
 }
 

@@ -1,4 +1,5 @@
 import { getCoverUrl } from "../../api/booksApi.js";
+import Pagination from "../common/Pagination.jsx";
 import pageStyles from "../../styles/common/Page.module.css";
 import styles from "./AdminBookList.module.css";
 
@@ -131,27 +132,14 @@ function AdminBookList({
             ))}
           </ul>
           {totalPages > 1 && (
-            <div className={styles.bookList__pagination}>
-              <button
-                type="button"
-                className="button button--ghost"
-                disabled={page <= 1}
-                onClick={() => onPageChange?.(page - 1)}
-              >
-                ← Назад
-              </button>
-              <span className={styles.bookList__pageInfo}>
-                {page} / {totalPages}
-              </span>
-              <button
-                type="button"
-                className="button button--ghost"
-                disabled={page >= totalPages}
-                onClick={() => onPageChange?.(page + 1)}
-              >
-                Вперёд →
-              </button>
-            </div>
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={(newPage) => onPageChange?.(newPage)}
+              prevLabel="← Назад"
+              nextLabel="Вперёд →"
+              format="{page} / {total}"
+            />
           )}
         </>
       )}

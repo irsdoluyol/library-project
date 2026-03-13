@@ -1,0 +1,20 @@
+/* Общая пагинация: Назад | X из Y | Вперёд */
+
+.pagination {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.pagination :global(.button) {
+  font-size: 1.1rem;
+  padding: 0.55rem 1.4rem;
+}
+
+.pageIndicator {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}

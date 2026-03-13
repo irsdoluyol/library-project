@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../context/useAuth.js";
 import { createRequest, fetchMyRequests } from "../../api/requestsApi.js";
 import { useAsyncLoad } from "../../hooks/useAsyncLoad.js";
+import PageWithHeader from "../../components/common/PageWithHeader.jsx";
+import ContentState from "../../components/common/ContentState.jsx";
 import pageStyles from "../../styles/common/Page.module.css";
 import styles from "./MyRequestsPage.module.css";
 
@@ -20,10 +22,11 @@ function MyRequestsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  const { data: requests = [], loading, error } = useAsyncLoad(
+  const { data, loading, error } = useAsyncLoad(
     () => (user ? fetchMyRequests() : Promise.resolve([])),
     [user, refreshTrigger]
   );
+  const requests = data ?? [];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,55 +57,57 @@ function MyRequestsPage() {
   };
 
   return (
-    <section className={pageStyles.page}>
-      <h1 className={pageStyles.title}>Мои обращения</h1>
-      <p className={pageStyles.text}>
-        Оставьте обращение в службу поддержки. Мы ответим в ближайшее время.
-      </p>
+    <PageWithHeader
+      title="Мои обращения"
+      description="Оставьте обращение в службу поддержки. Мы ответим в ближайшее время."
+    >
+      <div className={styles.wrapper}>
+        <form className={`${styles.form} ${styles.formGrid}`} onSubmit={handleSubmit}>
+          <label className={styles.field}>
+            <span className={styles.label}>Тема *</span>
+            <input
+              type="text"
+              className={styles.input}
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              placeholder="Например: Вопрос о книге"
+              maxLength={200}
+              required
+            />
+          </label>
+          <label className={`${styles.field} ${styles.fieldMessage}`}>
+            <span className={styles.label}>Сообщение *</span>
+            <textarea
+              className={`${styles.input} ${styles.inputTextarea}`}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Опишите ваш вопрос или проблему..."
+              rows={5}
+              maxLength={2000}
+              required
+            />
+          </label>
+          {submitError && <p className={styles.error}>{submitError}</p>}
+          <div className={styles.actions}>
+            <button
+              type="submit"
+              className="button button--primary"
+              disabled={submitting}
+            >
+              {submitting ? "Отправка..." : "Отправить"}
+            </button>
+          </div>
+        </form>
 
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <label className="auth__field">
-          <span>Тема *</span>
-          <input
-            type="text"
-            className="form-input"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            placeholder="Например: Вопрос о книге"
-            maxLength={200}
-            required
-          />
-        </label>
-        <label className="auth__field">
-          <span>Сообщение *</span>
-          <textarea
-            className="form-input form-input--textarea"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Опишите ваш вопрос или проблему..."
-            rows={4}
-            maxLength={2000}
-            required
-          />
-        </label>
-        {submitError && <p className="auth__error">{submitError}</p>}
-        <button
-          type="submit"
-          className="button button--primary"
-          disabled={submitting}
-        >
-          {submitting ? "Отправка..." : "Отправить"}
-        </button>
-      </form>
-
-      <h2 className={pageStyles.subtitle}>История обращений</h2>
-      {error && <p className={pageStyles.text}>{error}</p>}
-      {loading ? (
-        <p className={pageStyles.text}>Загрузка...</p>
-      ) : requests.length === 0 ? (
-        <p className={pageStyles.text}>У вас пока нет обращений.</p>
-      ) : (
-        <ul className={styles.list}>
+        <section className={styles.historySection}>
+          <h2 className={styles.historyHeading}>История обращений</h2>
+          {error && <p className={pageStyles.text}>{error}</p>}
+          <ContentState
+            loading={loading}
+            isEmpty={requests.length === 0}
+            emptyText="У вас пока нет обращений."
+          >
+            <ul className={styles.list}>
           {requests.map((r) => (
             <li key={r._id} className={styles.item}>
               <div className={styles.subject}>{r.subject}</div>
@@ -116,10 +121,12 @@ function MyRequestsPage() {
               </div>
               <p className={styles.message}>{r.message}</p>
             </li>
-          ))}
-        </ul>
-      )}
-    </section>
+            ))}
+            </ul>
+          </ContentState>
+        </section>
+      </div>
+    </PageWithHeader>
   );
 }
 

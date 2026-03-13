@@ -43,9 +43,10 @@ app.use((req, res, next) => {
 });
 
 const isTest = process.env.NODE_ENV === "test";
+const isProd = process.env.NODE_ENV === "production";
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: isTest ? 10000 : 20,
+  max: isTest ? 10000 : isProd ? 20 : 1000,
   message: { message: "Слишком много попыток входа. Попробуйте через 15 минут." },
   standardHeaders: true,
   legacyHeaders: false,
@@ -53,7 +54,7 @@ const authLimiter = rateLimit({
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: isTest ? 10000 : 100,
+  max: isTest ? 10000 : isProd ? 100 : 2000,
   message: { message: "Слишком много запросов. Попробуйте позже." },
   standardHeaders: true,
   legacyHeaders: false,

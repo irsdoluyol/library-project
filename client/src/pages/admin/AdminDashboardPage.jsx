@@ -3,6 +3,8 @@ import { useAuth } from "../../context/useAuth.js";
 import { useAdminBooks } from "../../hooks/useAdminBooks.js";
 import AdminBookForm from "../../components/admin/AdminBookForm.jsx";
 import AdminBookList from "../../components/admin/AdminBookList.jsx";
+import PageHeader from "../../components/common/PageHeader.jsx";
+import SectionHeading from "../../components/common/SectionHeading.jsx";
 import pageStyles from "../../styles/common/Page.module.css";
 import styles from "./AdminDashboardPage.module.css";
 
@@ -49,12 +51,10 @@ function AdminDashboardPage() {
   return (
     <section className={`${pageStyles.page} ${styles.adminPage}`}>
       <div className={styles.formSection}>
-        <header className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Панель администратора</h1>
-          <p className={styles.pageText}>
-            Управление каталогом: добавление, редактирование и удаление книг.
-          </p>
-        </header>
+        <PageHeader
+          title="Панель администратора"
+          description="Управление каталогом: добавление, редактирование и удаление книг."
+        />
 
         {error && <p className="auth__error">{error}</p>}
 
@@ -64,13 +64,12 @@ function AdminDashboardPage() {
           onChange={handleFormChange}
           onSubmit={handleSubmit}
           onCancel={resetForm}
-          headingClassName={styles.adminSectionHeading}
         />
       </div>
 
       <div className={styles.catalogSection}>
         <div className={styles.catalogInner}>
-          <h2 className={`${styles.adminSectionHeading} ${styles.catalogHeading}`}>Каталог</h2>
+          <SectionHeading className={styles.catalogHeading}>Каталог</SectionHeading>
           <AdminBookList
             books={paginatedBooks}
             totalCount={filteredBooks.length}

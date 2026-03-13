@@ -7,6 +7,8 @@ import { useDebounce } from "../../hooks/useDebounce.js";
 import { useAuth } from "../../context/useAuth.js";
 import BookCard from "../../components/catalog/BookCard.jsx";
 import HeroCarousel from "../../components/catalog/HeroCarousel.jsx";
+import SectionHeading from "../../components/common/SectionHeading.jsx";
+import Pagination from "../../components/common/Pagination.jsx";
 import catalogStyles from "./CatalogPage.module.css";
 import shelfStyles from "../../styles/pages/catalog/Shelf.module.css";
 
@@ -52,7 +54,7 @@ function CatalogPage() {
       <HeroCarousel />
 
       <section className={shelfStyles.shelf}>
-        <h2 className={shelfStyles.title}>Популярное</h2>
+        <SectionHeading align="center">Популярное</SectionHeading>
         {(error || borrowError) && (
           <p className={catalogStyles.text}>{error || borrowError}</p>
         )}
@@ -79,39 +81,17 @@ function CatalogPage() {
             )}
           </div>
         )}
-        <div className={catalogStyles.pagination}>
-          <button
-            type="button"
-            className="button button--ghost"
-            onClick={() => {
-              setSearchParams((prev) => {
-                const next = new URLSearchParams(prev);
-                next.set("page", String(Math.max(1, page - 1)));
-                return next;
-              });
-            }}
-            disabled={page <= 1}
-          >
-            Назад
-          </button>
-          <span className={catalogStyles.pageIndicator}>
-            Страница {page} из {pages}
-          </span>
-          <button
-            type="button"
-            className="button button--ghost"
-            onClick={() => {
-              setSearchParams((prev) => {
-                const next = new URLSearchParams(prev);
-                next.set("page", String(Math.min(pages, page + 1)));
-                return next;
-              });
-            }}
-            disabled={page >= pages}
-          >
-            Вперёд
-          </button>
-        </div>
+        <Pagination
+          page={page}
+          totalPages={pages}
+          onPageChange={(newPage) => {
+            setSearchParams((prev) => {
+              const next = new URLSearchParams(prev);
+              next.set("page", String(newPage));
+              return next;
+            });
+          }}
+        />
       </section>
     </section>
   );

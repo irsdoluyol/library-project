@@ -23,15 +23,12 @@ function App() {
             <Route path="/my-requests" element={<MyRequestsPage />} />
             <Route path="/read/:id" element={<ReadBookPage />} />
           </Route>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-        </Route>
-
-        <Route element={<AdminRoute />}>
-          <Route path="/admin" element={<MainLayout />}>
+          <Route path="admin" element={<AdminRoute />}>
             <Route index element={<AdminDashboardPage />} />
             <Route path="requests" element={<AdminRequestsPage />} />
           </Route>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

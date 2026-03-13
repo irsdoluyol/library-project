@@ -1,6 +1,10 @@
 /* Палитра по референсам: тёплые нейтральные, акцент */
 
 :root {
+  --font-heading: "Lora", Georgia, serif;
+  --font-body: "Source Sans 3", system-ui, sans-serif;
+  --font-accent: "Lora", Georgia, serif;
+
   /* Фоны */
   --color-bg: #faf8f5;
   --color-bg-sidebar: #f5f2ed;

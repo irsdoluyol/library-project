@@ -6,6 +6,7 @@
 }
 
 .title {
+  font-family: var(--font-heading);
   font-size: 2rem;
   margin-bottom: 0.6rem;
 }

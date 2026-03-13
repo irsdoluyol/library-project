@@ -1,12 +1,13 @@
+import SectionHeading from "../common/SectionHeading.jsx";
 import styles from "./AdminBookForm.module.css";
 
-function AdminBookForm({ form, saving, onChange, onSubmit, onCancel, headingClassName }) {
+function AdminBookForm({ form, saving, onChange, onSubmit, onCancel }) {
   return (
     <div className={styles.bookForm}>
       <form className={styles.bookForm__grid} onSubmit={onSubmit}>
-        <h2 className={`${styles.bookForm__title} ${headingClassName || ""}`}>
+        <SectionHeading as="h2" className={styles.bookForm__title}>
           {form.id ? "Редактировать книгу" : "Добавить книгу"}
-        </h2>
+        </SectionHeading>
 
         <label className={styles.bookForm__field}>
           <span className={styles.bookForm__label}>Название</span>
