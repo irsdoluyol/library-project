@@ -1,5 +1,8 @@
+import mongoose from "mongoose";
 import Request from "../models/Request.js";
 import { logRequest } from "../utils/logger.js";
+
+const isValidId = (id) => id && mongoose.Types.ObjectId.isValid(id) && String(new mongoose.Types.ObjectId(id)) === String(id);
 
 export const createRequest = async (req, res) => {
   try {
@@ -71,6 +74,10 @@ export const updateRequestStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
+
+    if (!isValidId(id)) {
+      return res.status(400).json({ message: "Некорректный ID обращения" });
+    }
 
     const validStatuses = ["new", "in_progress", "closed"];
     if (!validStatuses.includes(status)) {

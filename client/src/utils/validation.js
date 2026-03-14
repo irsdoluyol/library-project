@@ -1,7 +1,4 @@
-/**
- * Схема валидации регистрации.
- * Используется на клиенте и синхронизирована с сервером.
- */
+
 export const REGISTER_RULES = {
   name: {
     minLength: 2,
@@ -23,11 +20,6 @@ export const REGISTER_RULES = {
   },
 };
 
-/**
- * Валидирует данные регистрации.
- * @param {{ name: string, surname: string, email: string, password: string }} data
- * @returns {{ name?: string, surname?: string, email?: string, password?: string }} объект ошибок по полям
- */
 export function validateRegister(data) {
   const errors = {};
   const { name, surname, email, password } = REGISTER_RULES;

@@ -1,0 +1,24 @@
+
+.toast-custom {
+  font-family: var(--font-body) !important;
+  font-size: 0.95rem !important;
+  padding: 0.75rem 1.25rem !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-md) !important;
+  border: 1px solid var(--color-border) !important;
+  background: var(--color-bg-card) !important;
+  color: var(--color-text) !important;
+  opacity: 1 !important;
+}
+
+.toast-custom-success {
+  border-color: var(--color-border) !important;
+  background: #f8f4f2 !important;
+  color: var(--color-burgundy) !important;
+}
+
+.toast-custom-error {
+  border-color: #e0c4be !important;
+  background: #fdf6f4 !important;
+  color: var(--color-accent) !important;
+}

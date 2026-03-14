@@ -10,6 +10,8 @@ import {
   borrowBook,
   returnBook,
   getMyBooks,
+  getFavorites,
+  toggleFavorite,
   uploadBookFile,
   uploadCover,
   getCover,
@@ -20,6 +22,8 @@ const router = express.Router();
 
 router.get("/", getBooks);
 router.get("/my", protect, getMyBooks);
+router.get("/favorites", protect, getFavorites);
+router.post("/:id/favorite", protect, toggleFavorite);
 router.get("/:id/cover", getCover);
 router.post("/:id/borrow", protect, borrowBook);
 router.post("/:id/return", protect, returnBook);

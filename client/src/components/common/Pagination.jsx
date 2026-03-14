@@ -1,9 +1,5 @@
 import styles from "./Pagination.module.css";
 
-/**
- * Пагинация: кнопки Назад/Вперёд и индикатор страницы.
- * Используется в каталоге и списке книг админки.
- */
 function Pagination({
   page,
   totalPages,

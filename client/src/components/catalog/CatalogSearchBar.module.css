@@ -9,9 +9,15 @@
   flex-wrap: wrap;
 }
 
-.searchBar__input {
+.searchBar__inputWrap {
   flex: 1;
   min-width: 180px;
+  position: relative;
+}
+
+.searchBar__input {
+  width: 100%;
+  min-width: 0;
   padding: 0.6rem 1rem;
   font-size: 1rem;
   border: 1px solid var(--color-border);
@@ -29,6 +35,46 @@
 .searchBar__input:focus {
   outline: none;
   border: 1px solid var(--color-burgundy);
+}
+
+.searchBar__suggestions {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0.25rem 0;
+  list-style: none;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 110;
+  max-height: 14rem;
+  overflow-y: auto;
+}
+
+.searchBar__suggestionItem {
+  padding: 0.5rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.searchBar__suggestionItem:hover {
+  background: rgba(69, 22, 28, 0.06);
+  color: var(--color-burgundy);
+}
+
+.searchBar__suggestionTitle {
+  font-weight: 500;
+}
+
+.searchBar__suggestionAuthor {
+  color: var(--color-text-muted);
+  font-size: 0.9em;
 }
 
 .searchBar__genreWrap {

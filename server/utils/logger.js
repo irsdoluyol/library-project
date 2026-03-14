@@ -1,7 +1,4 @@
-/**
- * Логирование критически значимых операций (раздел 1.3 ВКР).
- * Используется для аудита изменений каталога и выдачи книг.
- */
+
 const log = (action, details) => {
   const ts = new Date().toISOString();
   const msg = `[${ts}] [${action}] ${JSON.stringify(details)}`;

@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import { fetchBooks } from "../../api/booksApi.js";
+import { useDebounce } from "../../hooks/useDebounce.js";
 import styles from "./CatalogSearchBar.module.css";
 
 const GENRE_OPTIONS = [
@@ -14,9 +16,14 @@ const GENRE_OPTIONS = [
 function CatalogSearchBar() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [genreOpen, setGenreOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const genreRef = useRef(null);
+  const searchWrapRef = useRef(null);
   const search = searchParams.get("search") ?? "";
   const genre = searchParams.get("genre") ?? "";
+  const debouncedSearch = useDebounce(search, 300);
 
   const currentLabel = GENRE_OPTIONS.find((o) => o.value === genre)?.label ?? "Все жанры";
 
@@ -25,10 +32,40 @@ function CatalogSearchBar() {
       if (genreRef.current && !genreRef.current.contains(e.target)) {
         setGenreOpen(false);
       }
+      if (searchWrapRef.current && !searchWrapRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
     };
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    const q = debouncedSearch.trim();
+    if (q.length < 1) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      setSuggestionsLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setSuggestionsLoading(true);
+    setShowSuggestions(true);
+    fetchBooks({ search: q, genre, page: 1, limit: 6 })
+      .then((res) => {
+        if (!cancelled) {
+          setSuggestions(res?.books ?? []);
+          setShowSuggestions(true);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setSuggestions([]);
+      })
+      .finally(() => {
+        if (!cancelled) setSuggestionsLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [debouncedSearch, genre]);
 
   const updateParams = (updates) => {
     const next = new URLSearchParams(searchParams);
@@ -58,16 +95,56 @@ function CatalogSearchBar() {
     }, { replace: true });
   };
 
+  const handleSuggestionClick = (book) => {
+    updateParams({ search: book.title || "" });
+    setShowSuggestions(false);
+  };
+
   return (
     <div className={styles.searchBar}>
-      <input
-        type="search"
-        className={styles.searchBar__input}
-        placeholder="Поиск по названию или автору"
-        value={search}
-        onChange={handleSearchChange}
-        aria-label="Поиск книг"
-      />
+      <div className={styles.searchBar__inputWrap} ref={searchWrapRef}>
+        <input
+          type="search"
+          className={styles.searchBar__input}
+          placeholder="Поиск по названию или автору"
+          autoComplete="off"
+          value={search}
+          onChange={handleSearchChange}
+          onFocus={() => (suggestions.length > 0 || suggestionsLoading) && setShowSuggestions(true)}
+          aria-label="Поиск книг"
+          aria-autocomplete="list"
+          aria-controls="search-suggestions"
+          aria-expanded={showSuggestions}
+        />
+        {showSuggestions && (
+          <ul
+            id="search-suggestions"
+            className={styles.searchBar__suggestions}
+            role="listbox"
+            aria-label="Подсказки книг"
+          >
+            {suggestionsLoading ? (
+              <li className={styles.searchBar__suggestionItem}>Загрузка...</li>
+            ) : suggestions.length === 0 ? (
+              <li className={styles.searchBar__suggestionItem}>Ничего не найдено</li>
+            ) : (
+              suggestions.map((book) => (
+                <li
+                  key={book._id}
+                  role="option"
+                  className={styles.searchBar__suggestionItem}
+                  onClick={() => handleSuggestionClick(book)}
+                >
+                  <span className={styles.searchBar__suggestionTitle}>{book.title || "—"}</span>
+                  {book.author && (
+                    <span className={styles.searchBar__suggestionAuthor}> — {book.author}</span>
+                  )}
+                </li>
+              ))
+            )}
+          </ul>
+        )}
+      </div>
       <div className={styles.searchBar__genreWrap} ref={genreRef}>
         <button
           type="button"

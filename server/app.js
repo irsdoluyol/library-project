@@ -92,17 +92,14 @@ app.get("/", (req, res) => {
   res.send("Library API работает 🚀");
 });
 
-// Тест: GET /api/health — проверить, что сервер и прокси работают
 app.get("/api/health", (req, res) => {
   res.json({ ok: true, message: "API доступен" });
 });
 
-// 404 — маршрут не найден
 app.use((req, res) => {
   res.status(404).json({ message: "Маршрут не найден" });
 });
 
-// Глобальный обработчик ошибок (4 аргумента — Express распознаёт как error handler)
 app.use((err, req, res, next) => {
   console.error("[Error]", err.message);
   const status = err.status || err.statusCode || 500;

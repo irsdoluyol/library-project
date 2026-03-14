@@ -1,9 +1,5 @@
 import pageStyles from "../../styles/common/Page.module.css";
 
-/**
- * Состояние контента: ошибка, загрузка, пусто или дети.
- * Меняешь текст — меняется везде.
- */
 function ContentState({
   loading,
   error,

@@ -22,6 +22,14 @@ export async function fetchMyBooks() {
   return request("/books/my");
 }
 
+export async function fetchFavorites() {
+  return request("/books/favorites");
+}
+
+export async function toggleFavorite(bookId) {
+  return request(`/books/${bookId}/favorite`, { method: "POST" });
+}
+
 export async function createBook(payload) {
   return request("/books", { method: "POST", body: payload });
 }

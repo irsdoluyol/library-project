@@ -41,9 +41,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       await request("/auth/logout", { method: "POST" });
-    } catch {
-      // cookie уже очищен или сеть недоступна
-    }
+    } catch {}
     setUser(null);
   };
 

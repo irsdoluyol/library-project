@@ -1,9 +1,6 @@
 import pageStyles from "../../styles/common/Page.module.css";
 import styles from "./AuthCard.module.css";
 
-/**
- * Обёртка-карточка для страниц Login и Register.
- */
 function AuthCard({ title, description, children }) {
   return (
     <section className={styles.auth}>

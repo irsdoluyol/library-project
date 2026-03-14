@@ -1,4 +1,4 @@
-/* Страница админки — форма узкая, таблица шире */
+
 
 .adminPage {
   max-width: 1100px;
@@ -10,8 +10,6 @@
   max-width: 800px;
   margin: 0 auto;
 }
-
-/* Разделитель — одинаковое расстояние, линия по центру */
 
 .catalogSection {
   position: relative;
@@ -30,14 +28,11 @@
   border-top: 1px solid var(--color-border);
 }
 
-/* «Каталог» и поиск — начало на одном уровне (max-width 800px как у формы) */
-
 .catalogInner {
   max-width: 800px;
   margin: 0 auto;
 }
 
-/* layout: SectionHeading + catalogHeading сбрасывает margin-top для «Каталог» */
 .catalogHeading {
   margin-top: 0;
 }

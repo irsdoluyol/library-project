@@ -1,10 +1,13 @@
 import fs from "fs";
 import path from "path";
+import mongoose from "mongoose";
 import Book from "../models/Book.js";
 import Borrowing from "../models/Borrowing.js";
 import { uploadDir, coverDir } from "../config/multer.js";
 import { logCatalog, logBorrowing } from "../utils/logger.js";
 import { escapeRegex } from "../utils/escapeRegex.js";
+
+const isValidId = (id) => id && mongoose.Types.ObjectId.isValid(id) && String(new mongoose.Types.ObjectId(id)) === String(id);
 
 const ALLOWED_SORT = ["createdAt", "-createdAt", "title", "-title", "author", "-author", "year", "-year"];
 const MAX_LIMIT = 100;
@@ -28,8 +31,9 @@ export const getBooks = async (req, res) => {
       }
     }
 
-    if (genre) {
-      query.genre = genre;
+    if (genre && typeof genre === "string") {
+      const g = genre.trim();
+      if (g) query.genre = { $regex: `^${escapeRegex(g)}$`, $options: "i" };
     }
 
     const books = await Book.find(query)
@@ -101,6 +105,10 @@ export const updateBook = async (req, res) => {
       }
     }
 
+    if (!isValidId(req.params.id)) {
+      return res.status(400).json({ message: "Некорректный ID книги" });
+    }
+
     const book = await Book.findByIdAndUpdate(
       req.params.id,
       updates,
@@ -122,6 +130,9 @@ export const updateBook = async (req, res) => {
 
 export const deleteBook = async (req, res) => {
   try {
+    if (!isValidId(req.params.id)) {
+      return res.status(400).json({ message: "Некорректный ID книги" });
+    }
     const book = await Book.findById(req.params.id);
 
     if (!book) {
@@ -151,6 +162,10 @@ export const borrowBook = async (req, res) => {
   try {
     const userId = req.user.id || req.user._id;
     const bookId = req.params.id;
+
+    if (!isValidId(bookId)) {
+      return res.status(400).json({ message: "Некорректный ID книги" });
+    }
 
     const book = await Book.findById(bookId);
 
@@ -183,6 +198,10 @@ export const returnBook = async (req, res) => {
     const userId = req.user.id || req.user._id;
     const bookId = req.params.id;
 
+    if (!isValidId(bookId)) {
+      return res.status(400).json({ message: "Некорректный ID книги" });
+    }
+
     const borrowing = await Borrowing.findOne({
       user: userId,
       book: bookId,
@@ -214,6 +233,9 @@ export const returnBook = async (req, res) => {
 export const uploadBookFile = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!isValidId(id)) {
+      return res.status(400).json({ message: "Некорректный ID книги" });
+    }
     if (!req.file) {
       return res.status(400).json({ message: "Файл не загружен. Выберите PDF или TXT." });
     }
@@ -247,6 +269,9 @@ export const uploadBookFile = async (req, res) => {
 export const uploadCover = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!isValidId(id)) {
+      return res.status(400).json({ message: "Некорректный ID книги" });
+    }
     if (!req.file) {
       return res.status(400).json({ message: "Выберите изображение (JPG, PNG, WebP)" });
     }
@@ -276,6 +301,9 @@ export const uploadCover = async (req, res) => {
 
 export const getCover = async (req, res) => {
   try {
+    if (!isValidId(req.params.id)) {
+      return res.status(400).json({ message: "Некорректный ID книги" });
+    }
     const book = await Book.findById(req.params.id);
     if (!book?.coverPath || !fs.existsSync(book.coverPath)) {
       return res.status(404).json({ message: "Обложка не найдена" });
@@ -335,6 +363,44 @@ export const readBookFile = async (req, res) => {
   } catch (error) {
     console.error("[readBookFile]", error);
     res.status(500).json({ message: error.message || "Ошибка чтения файла" });
+  }
+};
+
+export const getFavorites = async (req, res) => {
+  try {
+    const userId = req.user.id || req.user._id;
+    const user = await import("../models/User.js").then((m) => m.default.findById(userId).populate("favorites"));
+    if (!user) return res.status(404).json({ message: "Пользователь не найден" });
+    const books = user.favorites || [];
+    res.json({ books });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Ошибка получения сохранённых книг" });
+  }
+};
+
+export const toggleFavorite = async (req, res) => {
+  try {
+    const userId = req.user.id || req.user._id;
+    const bookId = req.params.id;
+    const User = (await import("../models/User.js")).default;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "Пользователь не найден" });
+    const book = await Book.findById(bookId);
+    if (!book) return res.status(404).json({ message: "Книга не найдена" });
+    const favorites = user.favorites || [];
+    const idx = favorites.findIndex((id) => String(id) === String(bookId));
+    if (idx >= 0) {
+      favorites.splice(idx, 1);
+      await user.save();
+      return res.json({ added: false });
+    }
+    favorites.push(bookId);
+    await user.save();
+    res.json({ added: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Ошибка обновления сохранённого" });
   }
 };
 

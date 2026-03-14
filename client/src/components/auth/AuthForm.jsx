@@ -4,10 +4,6 @@ import { useAuth } from "../../context/useAuth.js";
 import { validateRegister } from "../../utils/validation.js";
 import AuthCard from "./AuthCard.jsx";
 
-/**
- * Объединённая форма входа и регистрации.
- * mode: "login" | "register"
- */
 function AuthForm({ mode }) {
   const navigate = useNavigate();
   const { login, register } = useAuth();

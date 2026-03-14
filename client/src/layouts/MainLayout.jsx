@@ -3,6 +3,7 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/useAuth.js";
 import Footer from "../components/layout/Footer.jsx";
 import CatalogSearchBar from "../components/catalog/CatalogSearchBar.jsx";
+import FeedbackWidget from "../components/feedback/FeedbackWidget.jsx";
 import layoutStyles from "./MainLayout.module.css";
 import sidebarStyles from "./Sidebar.module.css";
 import headerStyles from "./Header.module.css";
@@ -71,7 +72,6 @@ function MainLayout() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const showFact = location.pathname === "/";
 
-  // При навигации фокус — в основной контент, а не в хедер
   useEffect(() => {
     mainRef.current?.focus({ preventScroll: true });
   }, [location.pathname]);
@@ -85,7 +85,8 @@ function MainLayout() {
   const navItems = [
     { to: "/", label: "Каталог" },
     { to: "/my-books", label: "Мои книги" },
-    ...(user ? [{ to: "/my-requests", label: "Обращения" }] : []),
+    ...(user ? [{ to: "/my-requests", label: "Мои обращения" }] : []),
+    ...(user ? [{ to: "/favorites", label: "Сохранённое" }] : []),
     ...(isAdmin ? [{ to: "/admin", label: "Админ" }] : []),
   ];
 
@@ -279,6 +280,8 @@ function MainLayout() {
           </div>
         </div>
       )}
+
+      <FeedbackWidget />
     </div>
   );
 }

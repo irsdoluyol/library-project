@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import CatalogPage from "./pages/catalog/CatalogPage.jsx";
 import MyBooksPage from "./pages/books/MyBooksPage.jsx";
+import FavoritesPage from "./pages/favorites/FavoritesPage.jsx";
 import MyRequestsPage from "./pages/requests/MyRequestsPage.jsx";
 import ReadBookPage from "./pages/books/ReadBookPage.jsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.jsx";
@@ -20,6 +21,7 @@ function App() {
           <Route index element={<CatalogPage />} />
           <Route element={<PrivateRoute />}>
             <Route path="/my-books" element={<MyBooksPage />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/my-requests" element={<MyRequestsPage />} />
             <Route path="/read/:id" element={<ReadBookPage />} />
           </Route>

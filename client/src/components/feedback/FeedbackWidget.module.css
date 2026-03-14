@@ -1,0 +1,143 @@
+
+
+.widget {
+  position: fixed;
+  right: 40px;
+  top: 78%;
+  z-index: 900;
+}
+
+.trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(69, 22, 28, 0.88), rgba(92, 36, 42, 0.82));
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #f8f4ef;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(69, 22, 28, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.trigger:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(69, 22, 28, 0.4);
+}
+
+.trigger svg {
+  width: 18px;
+  height: 18px;
+}
+
+.panel {
+  position: absolute;
+  top: -280px;
+  right: 100%;
+  margin-right: 12px;
+  width: 280px;
+  background: rgba(255, 253, 250, 0.94);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 32px rgba(69, 22, 28, 0.15);
+  padding: 1rem;
+  animation: panelIn 0.2s ease;
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.panelHeader {
+  margin-bottom: 0.75rem;
+}
+
+.panelTitle {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input,
+.textarea {
+  font-family: var(--font-body);
+  width: 100%;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  background: rgba(240, 237, 232, 0.9);
+  color: var(--color-text);
+  transition: border-color 0.2s;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--color-text-light);
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-burgundy);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+.submit {
+  font-family: var(--font-body);
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--color-burgundy), var(--color-burgundy-hover));
+  color: #f8f4ef;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.submit:hover:not(:disabled) {
+  opacity: 0.92;
+}
+
+.submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.link {
+  display: block;
+  margin-top: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-burgundy);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: var(--color-burgundy-hover);
+  text-decoration: underline;
+}

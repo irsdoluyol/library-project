@@ -11,12 +11,10 @@ const COOKIE_OPTIONS = {
   path: "/",
 };
 
-// Регистрация
 export const registerUser = async (req, res) => {
   try {
     const { name, surname, email, password } = req.body;
 
-    // Валидация
     const trimmedName = name?.trim();
     const trimmedSurname = surname?.trim();
     const trimmedEmail = email?.trim().toLowerCase();
@@ -80,12 +78,15 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// Логин
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const emailNormalized = email?.trim().toLowerCase();
+    if (!emailNormalized) {
+      return res.status(400).json({ message: "Введите email" });
+    }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: emailNormalized });
     if (!user) {
       return res.status(400).json({ message: "Неверный email или пароль" });
     }
@@ -118,7 +119,6 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// Текущий пользователь (по cookie). Без токена — { user: null }
 export const getMe = async (req, res) => {
   try {
     if (!req.user?.id) {
@@ -143,7 +143,6 @@ export const getMe = async (req, res) => {
   }
 };
 
-// Выход — очистка cookie
 export const logoutUser = (req, res) => {
   res.clearCookie("token", { path: "/" });
   res.json({ message: "Выход выполнен" });

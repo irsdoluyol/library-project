@@ -1,23 +1,20 @@
-/* Палитра по референсам: тёплые нейтральные, акцент */
+
 
 :root {
   --font-heading: "Lora", Georgia, serif;
   --font-body: "Source Sans 3", system-ui, sans-serif;
   --font-accent: "Lora", Georgia, serif;
 
-  /* Фоны */
   --color-bg: #faf8f5;
   --color-bg-sidebar: #f5f2ed;
   --color-bg-card: #ffffff;
   --color-bg-shelf: #fffdfa;
   --color-bg-input: #f0ede8;
 
-  /* Текст */
   --color-text: #2d2a32;
   --color-text-muted: #6b6574;
   --color-text-light: #9a94a0;
 
-  /* Акценты */
   --color-accent: #c45c3e;
   --color-accent-hover: #a84d33;
   --color-burgundy: #45161C;
@@ -31,20 +28,17 @@
   --color-primary: #2d2a32;
   --color-primary-soft: rgba(45, 42, 50, 0.08);
 
-  /* Границы и тени */
   --color-border: #e8e4df;
   --shadow-sm: 0 2px 8px rgba(45, 42, 50, 0.06);
   --shadow-md: 0 8px 24px rgba(45, 42, 50, 0.08);
   --shadow-lg: 0 16px 48px rgba(45, 42, 50, 0.1);
 
-  /* Радиусы */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
   --radius-full: 999px;
 
-  /* Ширина сайдбара */
   --sidebar-width: 220px;
   --sidebar-expanded: 220px;
   --sidebar-collapsed: 64px;

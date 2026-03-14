@@ -1,5 +1,7 @@
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 import { getCoverUrl } from "../../api/booksApi.js";
+import { IconBookmark, IconBookmarkFilled } from "../common/Icons.jsx";
 import styles from "./BookCard.module.css";
 
 function simpleHash(str) {
@@ -21,10 +23,64 @@ function StarRating({ value }) {
   );
 }
 
-function BookCard({ book, user, isLoggedIn: isLoggedInProp, onBorrow, pendingBorrowId }) {
+function BookCard({
+  book,
+  user,
+  isLoggedIn: isLoggedInProp,
+  onBorrow,
+  pendingBorrowId,
+  isBorrowedByMe,
+  onReturn,
+  pendingReturnId,
+  isFavorite,
+  onFavoriteToggle,
+  pendingFavoriteId,
+}) {
   const isLoggedIn = !!user || !!isLoggedInProp;
   const isPending = pendingBorrowId === book._id;
+  const isReturnPending = pendingReturnId === book._id;
+  const isFavPending = pendingFavoriteId === book._id;
   const rating = useMemo(() => getBookRating(book._id), [book._id]);
+
+  const renderActions = () => {
+    if (!isLoggedIn) return null;
+    if (isBorrowedByMe) {
+      return (
+        <div className={styles.actions}>
+          {book.filePath && (
+            <Link to={`/read/${book._id}`} className="button button--outline">
+              Читать <span className={styles.btnArrow} aria-hidden>→</span>
+            </Link>
+          )}
+          <button
+            type="button"
+            className="button button--ghost"
+            onClick={() => onReturn?.(book._id)}
+            disabled={isReturnPending}
+          >
+            {isReturnPending ? "..." : "Вернуть"}
+          </button>
+        </div>
+      );
+    }
+    return (
+      <div className={styles.actions}>
+        {book.available ? (
+          <button
+            type="button"
+            className="button button--outline"
+            onClick={() => onBorrow?.(book._id)}
+            disabled={isPending}
+          >
+            {isPending ? "..." : "Читать "}
+            <span className={styles.btnArrow} aria-hidden>→</span>
+          </button>
+        ) : (
+          <span className={styles.unavailable}>Недоступно</span>
+        )}
+      </div>
+    );
+  };
 
   return (
     <article className={styles.book}>
@@ -33,6 +89,17 @@ function BookCard({ book, user, isLoggedIn: isLoggedInProp, onBorrow, pendingBor
           <img src={getCoverUrl(book._id)} alt="" className={styles.coverImg} />
         ) : (
           <div className={styles.coverPlaceholder} />
+        )}
+        {onFavoriteToggle && (
+          <button
+            type="button"
+            className={styles.favoriteBtn}
+            onClick={() => onFavoriteToggle(book._id)}
+            disabled={isFavPending}
+            aria-label={isFavorite ? "Убрать из сохранённого" : "Добавить в сохранённое"}
+          >
+            {isFavorite ? <IconBookmarkFilled /> : <IconBookmark />}
+          </button>
         )}
       </div>
       <div className={styles.info}>
@@ -45,23 +112,7 @@ function BookCard({ book, user, isLoggedIn: isLoggedInProp, onBorrow, pendingBor
           {!book.genre && !book.year && "—"}
         </div>
       </div>
-      {isLoggedIn && (
-        <div className={styles.actions}>
-          {book.available ? (
-            <button
-              type="button"
-              className="button button--outline"
-              onClick={() => onBorrow(book._id)}
-              disabled={isPending}
-            >
-              {isPending ? "..." : "Читать "}
-              <span className={styles.btnArrow} aria-hidden>→</span>
-            </button>
-          ) : (
-            <span className={styles.unavailable}>Недоступно</span>
-          )}
-        </div>
-      )}
+      {renderActions()}
     </article>
   );
 }

@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
 
-/**
- * Загружает данные асинхронно при изменении deps. Учитывает размонтирование (cancelled).
- * @param {() => Promise<any>} loadFn — функция, возвращающая Promise с данными
- * @param {Array} deps — зависимости для перезапуска загрузки
- * @returns {{ data: any, setData: Function, loading: boolean, error: string }}
- */
 export function useAsyncLoad(loadFn, deps = []) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,7 +25,7 @@ export function useAsyncLoad(loadFn, deps = []) {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, deps);
 
   return { data, setData, loading, error };

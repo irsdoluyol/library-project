@@ -1,4 +1,4 @@
-/* Header — BEM: logo left, greeting center, catalog+books+avatar+logout right */
+
 
 .header {
   padding: 1.2rem 1.75rem;
@@ -11,7 +11,6 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-/* Без границы, когда под хедером идёт факт дня */
 .headerWithFact {
   border-bottom: none;
 }
@@ -89,7 +88,6 @@
   color: var(--color-burgundy);
 }
 
-/* Кнопка «Мои книги» (гость) — как ссылка */
 button.header__navLink {
   border: none;
   background: transparent;
@@ -120,9 +118,6 @@ button.header__navLink {
   }
 }
 
-
-/* Круглая иконка без бордера, бордовая буква внутри */
-
 .header__avatar {
   width: 28px;
   height: 28px;
@@ -140,12 +135,11 @@ button.header__navLink {
   flex-shrink: 0;
 }
 
-/* Выйти — чуть крупнее, чем было */
 .header__logout {
   border: none;
   background: transparent;
   cursor: pointer;
-  font: inherit; /* сброс браузерных стилей кнопки — иначе размер шрифта может отличаться */
+  font: inherit; 
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.4;

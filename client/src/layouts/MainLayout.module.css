@@ -92,7 +92,6 @@
   outline: none;
 }
 
-/* Модальное окно «Войдите» при клике на «Мои книги» (гость) */
 .modalOverlay {
   position: fixed;
   inset: 0;

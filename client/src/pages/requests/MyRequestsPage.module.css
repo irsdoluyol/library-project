@@ -1,4 +1,4 @@
-/* MyRequestsPage — форма и история обращений (как в админе «Добавить книгу») */
+
 
 .wrapper {
   max-width: 800px;
@@ -7,6 +7,10 @@
 
 .form {
   margin-top: 1rem;
+  background: var(--color-bg-shelf);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
 }
 
 .formGrid {
@@ -77,7 +81,6 @@
   border-radius: 8px;
 }
 
-/* Разделитель как в админке */
 .historySection {
   position: relative;
   margin-top: 2.5rem;
@@ -123,7 +126,7 @@
 }
 
 .item {
-  background: var(--color-bg-card);
+  background: var(--color-bg-shelf);
   border-radius: var(--radius-lg);
   padding: 1.25rem;
   border: 1px solid var(--color-border);
@@ -165,12 +168,12 @@
 }
 
 .statusInProgress {
-  background: rgba(246, 168, 0, 0.2);
+  background: #fef3d0;
   color: #8b6914;
 }
 
 .statusClosed {
-  background: rgba(21, 87, 36, 0.12);
+  background: #d4edda;
   color: #155724;
 }
 

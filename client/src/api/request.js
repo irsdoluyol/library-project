@@ -1,11 +1,5 @@
 import { API_URL } from "../config.js";
 
-/**
- * Выполняет запрос к API. JWT передаётся через httpOnly cookie (credentials: include).
- * @param {string} path — путь относительно API (например "/books")
- * @param {{ method?: string, body?: object }} options
- * @returns {Promise<object>} — распарсенный JSON
- */
 export async function request(path, { method = "GET", body } = {}) {
   const url = path.startsWith("http") ? path : `${API_URL}${path}`;
   const headers = { "Content-Type": "application/json" };

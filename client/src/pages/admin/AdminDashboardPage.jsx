@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { useAuth } from "../../context/useAuth.js";
 import { useAdminBooks } from "../../hooks/useAdminBooks.js";
 import AdminBookForm from "../../components/admin/AdminBookForm.jsx";
 import AdminBookList from "../../components/admin/AdminBookList.jsx";
@@ -11,7 +10,6 @@ import styles from "./AdminDashboardPage.module.css";
 const BOOKS_PER_PAGE = 6;
 
 function AdminDashboardPage() {
-  useAuth(); // для проверки авторизации
   const {
     books,
     loading,

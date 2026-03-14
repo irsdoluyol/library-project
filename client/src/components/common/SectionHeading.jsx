@@ -1,9 +1,5 @@
 import styles from "./SectionHeading.module.css";
 
-/**
- * Общий заголовок секции: «Популярное», «Каталог», «Добавить книгу» и т.д.
- * Меняешь стили здесь — меняются везде.
- */
 function SectionHeading({ children, align = "left", as: Tag = "h2", className = "" }) {
   const classes = [
     styles.sectionHeading,
