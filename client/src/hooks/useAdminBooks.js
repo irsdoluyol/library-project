@@ -32,7 +32,7 @@ export function useAdminBooks() {
       setLoading(true);
       setError("");
       try {
-        const data = await fetchBooks({ page: 1, limit: 100 });
+        const data = await fetchBooks({ page: 1, limit: 100, sort: "title" });
         if (!cancelled) setBooks(data.books || []);
       } catch (err) {
         if (!cancelled) setError(err.message);

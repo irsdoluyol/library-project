@@ -69,7 +69,7 @@ function AdminBookForm({ form, saving, onChange, onSubmit, onCancel }) {
         <div className={styles.bookForm__actions}>
           <button
             type="submit"
-            className={`button button--primary ${styles.bookForm__submit}`}
+            className="button button--primary button--submit"
             disabled={saving}
           >
             {saving

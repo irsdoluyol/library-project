@@ -17,6 +17,7 @@
 
 .bookForm__title {
   grid-column: 1 / -1;
+  margin-bottom: 0.25rem;
 }
 
 .bookForm__field {
@@ -68,18 +69,11 @@
   margin-top: -0.35rem;
 }
 
-.bookForm__submit {
-  font-family: var(--font-body);
-  width: auto;
-  padding: 0.63rem 1.58rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 8px;
-}
-
 .bookForm__actions :global(.button--ghost) {
   padding: 0.47rem 1.16rem;
   font-size: 0.9rem;
   font-weight: 600;
   border-radius: 8px;
 }
+
+/* Кнопка submit использует глобальный .button--submit */

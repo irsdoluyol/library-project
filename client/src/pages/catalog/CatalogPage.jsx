@@ -25,9 +25,19 @@ function CatalogPage() {
 
   const debouncedSearch = useDebounce(search, 400);
 
+  /* Страницы 1 и 2 в «Популярное» swapped: на экране 1 — контент API стр.2, на 2 — контент API стр.1 */
+  const apiPage = page === 1 ? 2 : page === 2 ? 1 : page;
+
   const { data, loading, error } = useAsyncLoad(
-    () => fetchBooks({ search: debouncedSearch, genre, page, limit: 10, sort: "title" }),
-    [debouncedSearch, genre, page, refreshTrigger, findTrigger]
+    () =>
+      fetchBooks({
+        search: debouncedSearch,
+        genre,
+        page: apiPage,
+        limit: 10,
+        sort: "title",
+      }),
+    [debouncedSearch, genre, apiPage, refreshTrigger, findTrigger]
   );
 
   const books = data?.books ?? [];

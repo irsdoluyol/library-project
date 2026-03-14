@@ -6,7 +6,7 @@ export async function fetchBooks({
   genre = "",
   page = 1,
   limit = 8,
-  sort = "createdAt",
+  sort = "title",
 } = {}) {
   const params = new URLSearchParams();
   params.set("page", String(page));

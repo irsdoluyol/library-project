@@ -6,17 +6,17 @@ import { uploadDir, coverDir } from "../config/multer.js";
 import { logCatalog, logBorrowing } from "../utils/logger.js";
 import { escapeRegex } from "../utils/escapeRegex.js";
 
-const ALLOWED_SORT = ["createdAt", "title", "author", "year"];
+const ALLOWED_SORT = ["createdAt", "-createdAt", "title", "-title", "author", "-author", "year", "-year"];
 const MAX_LIMIT = 100;
 const DEFAULT_LIMIT = 12;
 
 export const getBooks = async (req, res) => {
   try {
-    let { search, genre, page = 1, limit = DEFAULT_LIMIT, sort = "createdAt" } = req.query;
+    let { search, genre, page = 1, limit = DEFAULT_LIMIT, sort = "title" } = req.query;
 
     limit = Math.min(Math.max(1, Number(limit) || DEFAULT_LIMIT), MAX_LIMIT);
     page = Math.max(1, Number(page) || 1);
-    sort = ALLOWED_SORT.includes(sort) ? sort : "createdAt";
+    sort = ALLOWED_SORT.includes(sort) ? sort : "title";
 
     const query = {};
 
@@ -346,6 +346,12 @@ export const getMyBooks = async (req, res) => {
       user: userId,
       status: "active",
     }).populate("book");
+
+    myBorrowings.sort((a, b) => {
+      const tA = (a.book?.title || "").toLowerCase();
+      const tB = (b.book?.title || "").toLowerCase();
+      return tA.localeCompare(tB);
+    });
 
     res.json(myBorrowings);
   } catch (error) {

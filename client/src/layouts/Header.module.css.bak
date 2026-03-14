@@ -54,14 +54,14 @@
 }
 
 .header__greeting {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: 600;
   line-height: 1.35;
   color: #4a4650;
 }
 
 .header__tagline {
-  font-size: 1.1rem;
+  font-size: 1rem;
   line-height: 1.3;
   color: var(--color-text-muted);
   font-style: italic;
@@ -82,44 +82,18 @@
   text-decoration: none;
   padding: 0.4rem 0.65rem;
   border-radius: var(--radius-sm);
-  transition: color 0.2s, background 0.2s;
+  transition: color 0.2s;
 }
 
 .header__navLink:hover {
   color: var(--color-burgundy);
 }
 
-/* Кнопка «Мои книги» (гость) — как ссылка */
-button.header__navLink {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font: inherit;
-}
-
 .header__navLink--active {
   color: var(--color-burgundy);
   font-weight: 600;
+  background: rgba(69, 22, 28, 0.08);
 }
-
-.header__navLink--register {
-  animation: headerNavPulse 2.5s ease-in-out infinite;
-}
-
-.header__navLink--register:hover {
-  animation: none;
-  color: var(--color-burgundy);
-}
-
-@keyframes headerNavPulse {
-  0%, 100% {
-    color: #4a4650;
-  }
-  50% {
-    color: var(--color-burgundy);
-  }
-}
-
 
 /* Круглая иконка без бордера, бордовая буква внутри */
 
@@ -130,42 +104,16 @@ button.header__navLink {
   border: none;
   background: rgba(237, 212, 216, 0.4);
   color: var(--color-burgundy);
-  font-family: var(--font-heading);
   font-size: 1.05rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-/* Выйти — чуть крупнее, чем было */
-.header__logout {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font: inherit; /* сброс браузерных стилей кнопки — иначе размер шрифта может отличаться */
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.4;
-  color: #4a4650;
-  padding: 0.4rem 0.65rem;
-  border-radius: var(--radius-sm);
-  transition: color 0.2s, background 0.2s;
-}
-
-.header__logout:hover {
-  color: var(--color-burgundy);
-}
-
 .header__right .button--ghost {
-  color: #4a4650;
-  font-size: 1.05rem;
-  font-weight: 500;
-  padding: 0.4rem 0.65rem;
-  border-radius: var(--radius-sm);
-  font-family: inherit;
+  color: var(--color-burgundy);
 }
 
 .header__right .button--ghost:hover {
@@ -176,8 +124,6 @@ button.header__navLink {
 .header__right .button--primary {
   background: var(--color-burgundy);
   color: #fff;
-  font-size: 1.05rem;
-  padding: 0.45rem 1rem;
 }
 
 .header__right .button--primary:hover {

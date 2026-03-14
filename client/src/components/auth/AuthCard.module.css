@@ -1,16 +1,30 @@
-/* AuthCard — карточка для Login и Register */
+/* AuthCard — карточка для Login и Register, центрированная */
 
-.root {
+.auth {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: min(100%, 60vh);
+  padding: 2rem 1rem;
+  margin: 0 auto;
 }
 
 .card {
   width: 100%;
-  max-width: 420px;
-  background: var(--color-bg-card);
-  padding: 2rem 2.2rem 2.4rem;
+  max-width: 400px;
+  background: var(--color-bg);
+  padding: 2rem 2rem 2.25rem;
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(69, 22, 28, 0.04);
+  box-shadow: 0 8px 40px rgba(69, 22, 28, 0.22), 0 4px 20px rgba(69, 22, 28, 0.16), 0 2px 8px rgba(69, 22, 28, 0.12);
+  animation: cardSmoke 4s ease-in-out infinite;
+}
+
+@keyframes cardSmoke {
+  0%, 100% {
+    box-shadow: 0 8px 40px rgba(69, 22, 28, 0.22), 0 4px 20px rgba(69, 22, 28, 0.16), 0 2px 8px rgba(69, 22, 28, 0.12);
+  }
+  50% {
+    box-shadow: 0 12px 56px rgba(69, 22, 28, 0.28), 0 6px 28px rgba(69, 22, 28, 0.2), 0 0 90px rgba(69, 22, 28, 0.1);
+  }
 }

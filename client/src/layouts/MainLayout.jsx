@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/useAuth.js";
 import Footer from "../components/layout/Footer.jsx";
@@ -66,8 +66,16 @@ const FACTS = [
 function MainLayout() {
   const location = useLocation();
   const { user, isAdmin, logout } = useAuth();
+  const mainRef = useRef(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const showFact = location.pathname === "/";
+
+  // При навигации фокус — в основной контент, а не в хедер
+  useEffect(() => {
+    mainRef.current?.focus({ preventScroll: true });
+  }, [location.pathname]);
+
   const factIndex = useMemo(() => {
     const today = new Date();
     const start = new Date(today.getFullYear(), 0, 0);
@@ -106,6 +114,19 @@ function MainLayout() {
               to === "/"
                 ? location.pathname === "/"
                 : location.pathname.startsWith(to);
+            const isMyBooksGuest = to === "/my-books" && !user;
+            if (isMyBooksGuest) {
+              return (
+                <button
+                  key={to}
+                  type="button"
+                  className={`${sidebarStyles.sidebar__navItem} ${sidebarStyles["sidebar__navItem--button"]}`}
+                  onClick={() => setShowLoginModal(true)}
+                >
+                  {label}
+                </button>
+              );
+            }
             return (
               <Link
                 key={to}
@@ -142,9 +163,11 @@ function MainLayout() {
 
           <div className={headerStyles.header__center}>
             <span className={headerStyles.header__greeting}>
-              Добро пожаловать, {user ? [user.name, user.surname].filter(Boolean).join(" ") || user.email : "Вход"}!
+              {user ? `Добро пожаловать, ${[user.name, user.surname].filter(Boolean).join(" ") || user.email}!` : "Добро пожаловать!"}
             </span>
-            <span className={headerStyles.header__tagline}>Читайте с удовольствием</span>
+            <span className={headerStyles.header__tagline}>
+              {user ? "Открывайте для себя новые миры" : "Читайте с удовольствием"}
+            </span>
           </div>
 
           <div className={headerStyles.header__right}>
@@ -154,12 +177,22 @@ function MainLayout() {
             >
               Каталог
             </Link>
-            <Link
-              to="/my-books"
-              className={`${headerStyles.header__navLink} ${location.pathname.startsWith("/my-books") ? headerStyles["header__navLink--active"] : ""}`}
-            >
-              Мои книги
-            </Link>
+            {user ? (
+              <Link
+                to="/my-books"
+                className={`${headerStyles.header__navLink} ${location.pathname.startsWith("/my-books") ? headerStyles["header__navLink--active"] : ""}`}
+              >
+                Мои книги
+              </Link>
+            ) : (
+              <button
+                type="button"
+                className={headerStyles.header__navLink}
+                onClick={() => setShowLoginModal(true)}
+              >
+                Мои книги
+              </button>
+            )}
             {user ? (
               <>
                 <div
@@ -170,7 +203,7 @@ function MainLayout() {
                 </div>
                 <button
                   type="button"
-                  className="button button--ghost button--sm"
+                  className={headerStyles.header__logout}
                   onClick={logout}
                 >
                   Выйти
@@ -178,10 +211,16 @@ function MainLayout() {
               </>
             ) : (
               <>
-                <Link to="/login" className="button button--ghost button--sm">
+                <Link
+                  to="/login"
+                  className={`${headerStyles.header__navLink} ${location.pathname === "/login" ? headerStyles["header__navLink--active"] : ""}`}
+                >
                   Вход
                 </Link>
-                <Link to="/register" className="button button--primary button--sm">
+                <Link
+                  to="/register"
+                  className={`${headerStyles.header__navLink} ${headerStyles["header__navLink--register"]} ${location.pathname === "/register" ? headerStyles["header__navLink--active"] : ""}`}
+                >
                   Регистрация
                 </Link>
               </>
@@ -197,11 +236,49 @@ function MainLayout() {
 
         {showFact && <CatalogSearchBar />}
 
-        <main className={layoutStyles.main}>
+        <main ref={mainRef} className={layoutStyles.main} tabIndex={-1}>
           <Outlet />
         </main>
         <Footer />
       </div>
+
+      {showLoginModal && (
+        <div
+          className={layoutStyles.modalOverlay}
+          onClick={() => setShowLoginModal(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="login-modal-title"
+        >
+          <div
+            className={layoutStyles.modal}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 id="login-modal-title" className={layoutStyles.modalTitle}>
+              Войдите в аккаунт
+            </h2>
+            <p className={layoutStyles.modalText}>
+              Войдите или зарегистрируйтесь, чтобы просмотреть свои книги.
+            </p>
+            <div className={layoutStyles.modalActions}>
+              <Link
+                to="/login"
+                className="button button--primary"
+                onClick={() => setShowLoginModal(false)}
+              >
+                Войти
+              </Link>
+              <button
+                type="button"
+                className="button button--ghost"
+                onClick={() => setShowLoginModal(false)}
+              >
+                Закрыть
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -91,7 +91,7 @@ function MyRequestsPage() {
           <div className={styles.actions}>
             <button
               type="submit"
-              className="button button--primary"
+              className="button button--primary button--submit"
               disabled={submitting}
             >
               {submitting ? "Отправка..." : "Отправить"}

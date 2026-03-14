@@ -91,6 +91,32 @@
   color: inherit;
 }
 
+.sidebar__logoImg {
+  display: block;
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  background: transparent;
+  width: auto;
+  object-fit: contain;
+}
+
+.sidebar__logoImg {
+  display: block;
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  background: transparent;
+}
+
+.sidebar__logoImg {
+  display: block;
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  background: transparent;
+}
+
 .sidebar__nav {
   display: flex;
   flex-direction: column;
@@ -127,6 +153,15 @@
 .sidebar__navItem--active:hover {
   background: rgba(221, 190, 195, 0.45);
   color: #fff;
+}
+
+.sidebar__navItem--button {
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
 }
 
 .sidebar__footer {
