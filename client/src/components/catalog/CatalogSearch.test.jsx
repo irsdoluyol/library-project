@@ -52,8 +52,8 @@ describe("CatalogSearch", () => {
         onGenreChange={onGenreChange}
       />
     );
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "Fantasy" } });
-    expect(onGenreChange).toHaveBeenCalledWith("Fantasy");
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "Фантастика" } });
+    expect(onGenreChange).toHaveBeenCalledWith("Фантастика");
   });
 
   it("has All genres option", () => {
