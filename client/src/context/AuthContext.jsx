@@ -41,7 +41,9 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     try {
       await request("/auth/logout", { method: "POST" });
-    } catch {}
+    } catch {
+      /* сеть / 401 при выходе не критичны */
+    }
     setUser(null);
   };
 

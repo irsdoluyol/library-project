@@ -40,6 +40,8 @@ function CatalogSearchBar() {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  // Подсказки по поиску: загрузка при изменении debouncedSearch/genre (см. react.dev/learn/you-might-not-need-an-effect)
+  /* eslint-disable react-hooks/set-state-in-effect -- намеренная синхронизация UI с результатом fetch */
   useEffect(() => {
     const q = debouncedSearch.trim();
     if (q.length < 1) {
@@ -66,6 +68,7 @@ function CatalogSearchBar() {
       });
     return () => { cancelled = true; };
   }, [debouncedSearch, genre]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const updateParams = (updates) => {
     const next = new URLSearchParams(searchParams);
