@@ -27,6 +27,14 @@ function AdminLayout() {
           >
             Обращения
           </NavLink>
+          <NavLink
+            to="/admin/users"
+            className={({ isActive }) =>
+              isActive ? `${styles.link} ${styles.linkActive}` : styles.link
+            }
+          >
+            Заявки на регистрацию
+          </NavLink>
         </nav>
       </aside>
 

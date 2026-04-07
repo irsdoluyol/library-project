@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useAuth } from "../../context/useAuth.js";
 import { validateRegister } from "../../utils/validation.js";
 import AuthCard from "./AuthCard.jsx";
@@ -16,6 +17,8 @@ function AuthForm({ mode }) {
   const [fieldErrors, setFieldErrors] = useState({});
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const clearFieldError = (field) => {
     setFieldErrors((prev) => {
@@ -43,7 +46,10 @@ function AuthForm({ mode }) {
       return;
     }
 
-    const errors = validateRegister({ name, surname, email, password });
+    const errors = validateRegister(
+      { name, surname, email, password, acceptTerms: acceptedTerms },
+      { requireAcceptedTerms: true }
+    );
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
       return;
@@ -51,13 +57,19 @@ function AuthForm({ mode }) {
 
     setSubmitting(true);
     try {
-      await register(
+      const data = await register(
         name.trim(),
         surname.trim() || undefined,
         email.trim().toLowerCase(),
         password
       );
-      navigate("/");
+      const addr = email.trim().toLowerCase();
+      if (data.emailSent) {
+        toast.success(`Письмо отправлено на ${addr}. Откройте почту и перейдите по ссылке.`);
+      } else {
+        toast.success(data?.message || "Заявка создана. Проверьте инструкции на следующей странице.");
+      }
+      navigate("/verify-email", { state: { email: addr } });
     } catch (err) {
       setSubmitError(err.message);
     } finally {
@@ -68,7 +80,7 @@ function AuthForm({ mode }) {
   const title = isLogin ? "Вход" : "Регистрация";
   const description = isLogin
     ? "Введите данные для доступа к библиотеке."
-    : "Создайте аккаунт, чтобы брать книги из онлайн-каталога.";
+    : "На email придёт ссылка для подтверждения — после перехода по ней можно войти (без ожидания администратора).";
 
   return (
     <AuthCard title={title} description={description}>
@@ -177,34 +189,56 @@ function AuthForm({ mode }) {
 
         <label className={`auth__field ${fieldErrors.password ? "auth__field--invalid" : ""}`}>
           <span>Пароль *</span>
-          <input
-            type="password"
-            className={`form-input ${fieldErrors.password ? "form-input--invalid" : ""}`}
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              clearFieldError("password");
-            }}
-            onBlur={
-              isLogin
-                ? undefined
-                : () => {
-                    const err = validateRegister({ name, surname, email, password });
-                    setFieldErrors((p) => {
-                      const next = { ...p };
-                      if (err.password) next.password = err.password;
-                      else delete next.password;
-                      return next;
-                    });
-                  }
-            }
-            placeholder={isLogin ? undefined : "Минимум 6 символов"}
-            minLength={isLogin ? undefined : 6}
-            maxLength={100}
-            required
-            aria-invalid={!!fieldErrors.password}
-            aria-describedby={fieldErrors.password ? "password-error" : undefined}
-          />
+          <div className="auth__passwordRow">
+            <input
+              type={showPassword ? "text" : "password"}
+              autoComplete={isLogin ? "current-password" : "new-password"}
+              className={`form-input form-input--password ${fieldErrors.password ? "form-input--invalid" : ""}`}
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                clearFieldError("password");
+              }}
+              onBlur={
+                isLogin
+                  ? undefined
+                  : () => {
+                      const err = validateRegister({ name, surname, email, password });
+                      setFieldErrors((p) => {
+                        const next = { ...p };
+                        if (err.password) next.password = err.password;
+                        else delete next.password;
+                        return next;
+                      });
+                    }
+              }
+              placeholder={isLogin ? undefined : "Минимум 6 символов"}
+              minLength={isLogin ? undefined : 6}
+              maxLength={100}
+              required
+              aria-invalid={!!fieldErrors.password}
+              aria-describedby={fieldErrors.password ? "password-error" : undefined}
+            />
+            <button
+              type="button"
+              className="auth__passwordToggle"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
+              aria-pressed={showPassword}
+            >
+              {showPassword ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
+            </button>
+          </div>
           {fieldErrors.password && (
             <span id="password-error" className="auth__error" role="alert">
               {fieldErrors.password}
@@ -216,6 +250,36 @@ function AuthForm({ mode }) {
           <p className="auth__error auth__error--submit" role="alert">
             {submitError}
           </p>
+        )}
+
+        {!isLogin && (
+          <div
+            className={`auth__termsBlock ${fieldErrors.acceptTerms ? "auth__field--invalid" : ""}`}
+          >
+            <div className="auth__terms">
+              <input
+                id="auth-accept-terms"
+                type="checkbox"
+                checked={acceptedTerms}
+                onChange={(e) => {
+                  setAcceptedTerms(e.target.checked);
+                  clearFieldError("acceptTerms");
+                }}
+                aria-invalid={!!fieldErrors.acceptTerms}
+                aria-describedby={fieldErrors.acceptTerms ? "accept-terms-error" : undefined}
+              />
+              <label htmlFor="auth-accept-terms" className="auth__termsLabel">
+                Я соглашаюсь с{" "}
+                <Link to="/terms">условиями использования и обработкой персональных данных</Link>
+                {" "}*
+              </label>
+            </div>
+            {fieldErrors.acceptTerms && (
+              <span id="accept-terms-error" className="auth__error" role="alert">
+                {fieldErrors.acceptTerms}
+              </span>
+            )}
+          </div>
         )}
 
         <button
@@ -231,6 +295,12 @@ function AuthForm({ mode }) {
               ? "Создание аккаунта..."
               : "Зарегистрироваться"}
         </button>
+
+        {isLogin && (
+          <p className="auth__verifyLink">
+            <Link to="/verify-email">Подтвердить email или запросить письмо снова</Link>
+          </p>
+        )}
 
         <p className="auth__switch">
           {isLogin ? (

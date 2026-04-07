@@ -27,7 +27,6 @@ export function useAsyncLoad(loadFn, deps = []) {
     return () => {
       cancelled = true;
     };
-    // Второй аргумент — явный список зависимостей от вызывающего кода; loadFn берётся из ref.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 

@@ -1,6 +1,6 @@
 import { API_URL } from "../config.js";
 
-export async function request(path, { method = "GET", body } = {}) {
+export async function request(path, { method = "GET", body, signal } = {}) {
   const url = path.startsWith("http") ? path : `${API_URL}${path}`;
   const headers = { "Content-Type": "application/json" };
 
@@ -10,9 +10,11 @@ export async function request(path, { method = "GET", body } = {}) {
       method,
       headers,
       credentials: "include",
+      signal,
       ...(body !== undefined && { body: JSON.stringify(body) }),
     });
-  } catch {
+  } catch (e) {
+    if (e?.name === "AbortError") throw e;
     throw new Error(
       "Сервер недоступен. Проверьте, что сервер запущен (npm run dev в папке server)."
     );

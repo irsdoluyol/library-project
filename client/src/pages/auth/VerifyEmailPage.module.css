@@ -1,0 +1,98 @@
+.wrap {
+  max-width: 26rem;
+  margin: 0 auto;
+}
+
+.lead {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--color-text);
+  margin: 0 0 1rem;
+}
+
+.mailNotice .lead:last-child {
+  margin-bottom: 0;
+}
+
+.mailNotice {
+  margin-bottom: 1rem;
+}
+
+.emailLine {
+  display: block;
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  background: rgba(69, 22, 28, 0.06);
+  border: 1px solid rgba(69, 22, 28, 0.1);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-burgundy);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+
+.status {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+
+.statusOk {
+  color: #2e7d32;
+}
+
+.statusErr {
+  color: #c0392b;
+}
+
+.resend {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(69, 22, 28, 0.12);
+}
+
+.resendTitle {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.65rem;
+  color: var(--color-text);
+}
+
+.resendForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.resendRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.resendRow label {
+  font-size: 0.85rem;
+  color: #6c647c;
+}
+
+.links {
+  margin-top: 1.25rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.links a {
+  color: var(--color-burgundy);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}

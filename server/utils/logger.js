@@ -20,3 +20,8 @@ export const logRequest = {
   create: (userId, requestId) => log("REQUEST_CREATE", { userId, requestId }),
   statusChange: (adminId, requestId, status) => log("REQUEST_STATUS", { adminId, requestId, status }),
 };
+
+export const logModeration = {
+  approveUser: (adminId, userId, email) => log("USER_APPROVE", { adminId, userId, email }),
+  rejectUser: (adminId, userId, email) => log("USER_REJECT", { adminId, userId, email }),
+};

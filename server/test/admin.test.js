@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import Book from "../models/Book.js";
 import { appPromise } from "./setup.js";
+import { activateRegisteredUser } from "./activateRegisteredUser.js";
 
 let app;
 let adminAgent;
@@ -22,6 +23,7 @@ describe("Admin API (books CRUD)", () => {
       email: adminEmail,
       password: await bcrypt.hash("admin123", 10),
       role: "admin",
+      accountStatus: "active",
     });
     adminAgent = request.agent(app);
     await adminAgent.post("/api/auth/login").send({ email: adminEmail, password: "admin123" });
@@ -74,12 +76,13 @@ describe("Admin API (books CRUD)", () => {
 
   it("user не может создать книгу (403)", async () => {
     const userEmail = `user-${Date.now()}@example.com`;
-    await request(app).post("/api/auth/register").send({
+    const reg = await request(app).post("/api/auth/register").send({
       name: "Юзер",
       surname: "",
       email: userEmail,
       password: "pass123",
     });
+    await activateRegisteredUser(app, userEmail);
     const userAgent = request.agent(app);
     await userAgent.post("/api/auth/login").send({ email: userEmail, password: "pass123" });
 

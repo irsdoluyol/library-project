@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import { appPromise } from "./setup.js";
+import { activateRegisteredUser } from "./activateRegisteredUser.js";
 
 let app;
 let userAgent;
@@ -16,16 +17,6 @@ describe("Requests API", () => {
     app = await appPromise;
     await mongoose.connection.asPromise();
 
-    userEmail = `user-req-${Date.now()}@example.com`;
-    await request(app).post("/api/auth/register").send({
-      name: "Пользователь",
-      surname: "",
-      email: userEmail,
-      password: "pass123",
-    });
-    userAgent = request.agent(app);
-    await userAgent.post("/api/auth/login").send({ email: userEmail, password: "pass123" });
-
     const adminEmail = `admin-req-${Date.now()}@example.com`;
     await User.create({
       name: "Админ",
@@ -33,9 +24,21 @@ describe("Requests API", () => {
       email: adminEmail,
       password: await bcrypt.hash("admin123", 10),
       role: "admin",
+      accountStatus: "active",
     });
     adminAgent = request.agent(app);
     await adminAgent.post("/api/auth/login").send({ email: adminEmail, password: "admin123" });
+
+    userEmail = `user-req-${Date.now()}@example.com`;
+    const reg = await request(app).post("/api/auth/register").send({
+      name: "Пользователь",
+      surname: "",
+      email: userEmail,
+      password: "pass123",
+    });
+    await activateRegisteredUser(app, userEmail);
+    userAgent = request.agent(app);
+    await userAgent.post("/api/auth/login").send({ email: userEmail, password: "pass123" });
   });
 
   afterAll(async () => {

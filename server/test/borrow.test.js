@@ -6,6 +6,7 @@ import User from "../models/User.js";
 import Book from "../models/Book.js";
 import Borrowing from "../models/Borrowing.js";
 import { appPromise } from "./setup.js";
+import { activateRegisteredUser } from "./activateRegisteredUser.js";
 
 let app;
 let adminAgent;
@@ -25,6 +26,7 @@ describe("Borrow / Return API", () => {
       email: adminEmail,
       password: await bcrypt.hash("admin123", 10),
       role: "admin",
+      accountStatus: "active",
     });
     adminAgent = request.agent(app);
     await adminAgent.post("/api/auth/login").send({ email: adminEmail, password: "admin123" });
@@ -37,12 +39,13 @@ describe("Borrow / Return API", () => {
     bookId = createRes.body._id;
 
     userEmail = `user-borrow-${Date.now()}@example.com`;
-    await request(app).post("/api/auth/register").send({
+    const reg = await request(app).post("/api/auth/register").send({
       name: "Читатель",
       surname: "",
       email: userEmail,
       password: "pass123",
     });
+    await activateRegisteredUser(app, userEmail);
     userAgent = request.agent(app);
     await userAgent.post("/api/auth/login").send({ email: userEmail, password: "pass123" });
   });

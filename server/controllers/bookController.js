@@ -13,13 +13,22 @@ const ALLOWED_SORT = ["createdAt", "-createdAt", "title", "-title", "author", "-
 const MAX_LIMIT = 100;
 const DEFAULT_LIMIT = 12;
 
+function normalizeSortParam(raw) {
+  if (raw == null) return "title";
+  const s = Array.isArray(raw) ? String(raw[0]) : String(raw);
+  const trimmed = s.trim();
+  if (!trimmed) return "title";
+  const base = trimmed.includes(":") ? trimmed.split(":")[0].trim() : trimmed;
+  return ALLOWED_SORT.includes(base) ? base : "title";
+}
+
 export const getBooks = async (req, res) => {
   try {
-    let { search, genre, page = 1, limit = DEFAULT_LIMIT, sort = "title" } = req.query;
+    let { search, genre, page = 1, limit = DEFAULT_LIMIT, sort: sortRaw } = req.query;
 
     limit = Math.min(Math.max(1, Number(limit) || DEFAULT_LIMIT), MAX_LIMIT);
     page = Math.max(1, Number(page) || 1);
-    sort = ALLOWED_SORT.includes(sort) ? sort : "title";
+    const sort = normalizeSortParam(sortRaw);
 
     const query = {};
 

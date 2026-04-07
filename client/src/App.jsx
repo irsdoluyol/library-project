@@ -7,8 +7,11 @@ import MyRequestsPage from "./pages/requests/MyRequestsPage.jsx";
 import ReadBookPage from "./pages/books/ReadBookPage.jsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.jsx";
 import AdminRequestsPage from "./pages/admin/AdminRequestsPage.jsx";
+import AdminUsersPage from "./pages/admin/AdminUsersPage.jsx";
 import LoginPage from "./pages/auth/LoginPage.jsx";
 import RegisterPage from "./pages/auth/RegisterPage.jsx";
+import VerifyEmailPage from "./pages/auth/VerifyEmailPage.jsx";
+import TermsPage from "./pages/legal/TermsPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
 import PrivateRoute from "./routes/PrivateRoute.jsx";
 import AdminRoute from "./routes/AdminRoute.jsx";
@@ -28,9 +31,12 @@ function App() {
           <Route path="admin" element={<AdminRoute />}>
             <Route index element={<AdminDashboardPage />} />
             <Route path="requests" element={<AdminRequestsPage />} />
+            <Route path="users" element={<AdminUsersPage />} />
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/terms" element={<TermsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

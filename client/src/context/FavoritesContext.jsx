@@ -43,7 +43,6 @@ export function FavoritesProvider({ children }) {
   );
 }
 
-// Хук рядом с провайдером — стандартный паттерн для контекста
 // eslint-disable-next-line react-refresh/only-export-components
 export function useFavorites() {
   const ctx = useContext(FavoritesContext);

@@ -82,12 +82,25 @@ function MainLayout() {
     return Math.floor((today - start) / 86400000) % FACTS.length;
   }, []);
 
+  const isNavItemActive = (to) => {
+    const path = location.pathname.replace(/\/$/, "") || "/";
+    const target = to.replace(/\/$/, "") || "/";
+    if (target === "/") return path === "/";
+    if (target === "/admin") return path === "/admin";
+    return path === target || path.startsWith(`${target}/`);
+  };
+
   const navItems = [
     { to: "/", label: "Каталог" },
     { to: "/my-books", label: "Мои книги" },
     ...(user ? [{ to: "/my-requests", label: "Мои обращения" }] : []),
     ...(user ? [{ to: "/favorites", label: "Сохранённое" }] : []),
-    ...(isAdmin ? [{ to: "/admin", label: "Админ" }] : []),
+    ...(isAdmin
+      ? [
+          { to: "/admin", label: "Админ" },
+          { to: "/admin/users", label: "Заявки" },
+        ]
+      : []),
   ];
 
   return (
@@ -111,10 +124,7 @@ function MainLayout() {
         </Link>
         <nav className={sidebarStyles.sidebar__nav}>
           {navItems.map(({ to, label }) => {
-            const isActive =
-              to === "/"
-                ? location.pathname === "/"
-                : location.pathname.startsWith(to);
+            const isActive = isNavItemActive(to);
             const isMyBooksGuest = to === "/my-books" && !user;
             if (isMyBooksGuest) {
               return (

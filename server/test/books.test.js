@@ -37,4 +37,12 @@ describe("Books API", () => {
     expect(res.body.page).toBe(1);
     expect(res.body.books.length).toBeLessThanOrEqual(5);
   });
+
+  it("GET /api/books?page=2&limit=10&sort=title не возвращает 500", async () => {
+    const res = await request(app)
+      .get("/api/books")
+      .query({ page: 2, limit: 10, sort: "title" });
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("books");
+  });
 });

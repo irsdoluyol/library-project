@@ -98,6 +98,29 @@ describe("validateRegister", () => {
     const errors = validateRegister(data);
     expect(errors.surname).toBeDefined();
   });
+
+  it("returns acceptTerms error when required and not checked", () => {
+    const data = {
+      name: "Мария",
+      surname: "",
+      email: "test@test.com",
+      password: "123456",
+      acceptTerms: false,
+    };
+    const errors = validateRegister(data, { requireAcceptedTerms: true });
+    expect(errors.acceptTerms).toBeDefined();
+  });
+
+  it("passes when terms accepted and required", () => {
+    const data = {
+      name: "Мария",
+      surname: "",
+      email: "test@test.com",
+      password: "123456",
+      acceptTerms: true,
+    };
+    expect(validateRegister(data, { requireAcceptedTerms: true })).toEqual({});
+  });
 });
 
 describe("REGISTER_RULES", () => {

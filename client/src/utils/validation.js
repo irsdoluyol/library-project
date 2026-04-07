@@ -20,7 +20,7 @@ export const REGISTER_RULES = {
   },
 };
 
-export function validateRegister(data) {
+export function validateRegister(data, options = {}) {
   const errors = {};
   const { name, surname, email, password } = REGISTER_RULES;
 
@@ -49,6 +49,11 @@ export function validateRegister(data) {
     errors.password = `Пароль должен содержать не менее ${password.minLength} символов`;
   } else if (p.length > password.maxLength) {
     errors.password = `Пароль не более ${password.maxLength} символов`;
+  }
+
+  if (options.requireAcceptedTerms && !data.acceptTerms) {
+    errors.acceptTerms =
+      "Необходимо согласие с условиями использования и на обработку персональных данных";
   }
 
   return errors;

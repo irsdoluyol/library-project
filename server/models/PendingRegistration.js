@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const pendingRegistrationSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -24,31 +24,23 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-    },
-    role: {
-      type: String,
-      enum: ["user", "admin"],
-      default: "user",
-    },
-    accountStatus: {
-      type: String,
-      enum: ["pending", "active", "rejected"],
-    },
-    emailVerificationToken: {
-      type: String,
       select: false,
     },
-    emailVerificationExpires: {
-      type: Date,
+    token: {
+      type: String,
+      required: true,
+      select: false,
     },
-    favorites: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Book",
-    }],
+    expiresAt: {
+      type: Date,
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+pendingRegistrationSchema.index({ token: 1 });
 
-export default User;
+const PendingRegistration = mongoose.model("PendingRegistration", pendingRegistrationSchema);
+
+export default PendingRegistration;

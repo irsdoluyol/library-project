@@ -40,8 +40,7 @@ function CatalogSearchBar() {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  // Подсказки по поиску: загрузка при изменении debouncedSearch/genre (см. react.dev/learn/you-might-not-need-an-effect)
-  /* eslint-disable react-hooks/set-state-in-effect -- намеренная синхронизация UI с результатом fetch */
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     const q = debouncedSearch.trim();
     if (q.length < 1) {

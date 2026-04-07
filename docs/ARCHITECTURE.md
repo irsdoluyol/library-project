@@ -21,8 +21,10 @@
 | DELETE | /books/:id | Удалить книгу | admin |
 | POST | /books/:id/upload | Загрузить файл книги | admin |
 | POST | /books/:id/cover | Загрузить обложку | admin |
-| POST | /auth/register | Регистрация | — |
-| POST | /auth/login | Вход | — |
+| POST | /auth/register | Регистрация (`pending`), письмо со ссылкой подтверждения; без cookie | — |
+| POST | /auth/verify-email | Активация аккаунта по `token` из письма | — |
+| POST | /auth/resend-verification | Повторная отправка ссылки (без раскрытия, есть ли email) | — |
+| POST | /auth/login | Вход (403, если email не подтверждён или заявка отклонена) | — |
 | POST | /auth/logout | Выход | — |
 | GET | /auth/me | Текущий пользователь | опционально |
 | POST | /requests | Создать обращение | JWT |
@@ -30,13 +32,16 @@
 | GET | /requests/all | Все обращения | admin |
 | PATCH | /requests/:id | Обновить статус обращения | admin |
 | GET | /admin/dashboard | Сводка админа | admin |
+| GET | /admin/users/pending | Заявки на регистрацию | admin |
+| PATCH | /admin/users/:id/approve | Подтвердить регистрацию | admin |
+| PATCH | /admin/users/:id/reject | Отклонить регистрацию | admin |
 | GET | /health | Проверка доступности API | — |
 
 ## Структура клиента (React)
 
 ```
 client/src/
-├── api/              # API-клиенты (booksApi, requestsApi)
+├── api/              # API-клиенты (booksApi, requestsApi, adminUsersApi)
 ├── components/       # Переиспользуемые компоненты
 │   ├── auth/        # AuthCard — карточка входа/регистрации
 │   └── admin/       # AdminBookForm, AdminBookList
@@ -45,7 +50,7 @@ client/src/
 ├── layouts/         # MainLayout, AdminLayout
 ├── pages/           # Страницы по доменам
 │   ├── admin/       # AdminDashboardPage, AdminRequestsPage
-│   ├── auth/        # LoginPage, RegisterPage
+│   ├── auth/        # LoginPage, RegisterPage, VerifyEmailPage
 │   ├── books/       # MyBooksPage, ReadBookPage
 │   ├── catalog/     # CatalogPage
 │   └── requests/    # MyRequestsPage

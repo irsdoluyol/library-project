@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import { request } from "../api/request.js";
 
 const AuthContext = createContext(null);
@@ -7,7 +7,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchMe = async () => {
+  const fetchMe = useCallback(async () => {
     try {
       const data = await request("/auth/me");
       setUser(data.user);
@@ -16,11 +16,11 @@ export function AuthProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchMe();
-  }, []);
+  }, [fetchMe]);
 
   const login = async (email, password) => {
     const data = await request("/auth/login", {
@@ -35,14 +35,15 @@ export function AuthProvider({ children }) {
       method: "POST",
       body: { name, surname, email, password },
     });
-    setUser(data.user);
+    setUser(null);
+    return data;
   };
 
   const logout = async () => {
     try {
       await request("/auth/logout", { method: "POST" });
     } catch {
-      /* сеть / 401 при выходе не критичны */
+      // ignore
     }
     setUser(null);
   };
@@ -51,7 +52,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAdmin, loading, login, register, logout }}
+      value={{ user, isAdmin, loading, login, register, logout, refreshUser: fetchMe }}
     >
       {children}
     </AuthContext.Provider>
