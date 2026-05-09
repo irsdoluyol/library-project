@@ -1,8 +1,19 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth.js";
-import { fetchBookContent } from "../../api/booksApi.js";
+import { fetchBookContent, getBookReaderUrl } from "../../api/booksApi.js";
 import styles from "./ReadBookPage.module.css";
+
+function paragraphsFromTxt(text) {
+  if (!text) return [];
+  const normalized = String(text).replace(/\r\n/g, "\n").trim();
+  if (!normalized) return [];
+  const blocks = normalized.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+  if (blocks.length > 1) return blocks;
+  const lines = normalized.split("\n").map((l) => l.trim()).filter(Boolean);
+  if (lines.length > 1) return lines;
+  return [normalized];
+}
 
 function ReadBookPage() {
   const { id } = useParams();
@@ -83,12 +94,24 @@ function ReadBookPage() {
   return (
     <div
       className={`${styles.readPage} ${isDark ? styles.dark : ""}`}
+      lang="ru"
       style={{ ["--read-bg"]: bgColor, ["--read-font-size"]: `${fontSize}px`, ["--read-font"]: fontFamily }}
     >
       <header className={styles.toolbar}>
-        <button type="button" className={styles.back} onClick={() => navigate("/my-books")}>
-          ← Назад к книгам
-        </button>
+        <div className={styles.toolbarLeft}>
+          <button type="button" className={styles.back} onClick={() => navigate("/my-books")}>
+            ← Назад к книгам
+          </button>
+          <button
+            type="button"
+            className={styles.openTab}
+            onClick={() =>
+              window.open(getBookReaderUrl(id, content.type), "_blank", "noopener,noreferrer")
+            }
+          >
+            Открыть во вкладке
+          </button>
+        </div>
         <div className={styles.settings}>
           <div className={styles.themes}>
             {themes.map((t) => (
@@ -138,9 +161,13 @@ function ReadBookPage() {
         {content.type === "pdf" ? (
           <iframe src={content.url} title="Книга" className={styles.pdf} />
         ) : (
-          <div className={styles.textWrap}>
-            <pre className={styles.text}>{content.text}</pre>
-          </div>
+          <article className={styles.textWrap}>
+            {paragraphsFromTxt(content.text).map((chunk, i) => (
+              <p key={i} className={styles.text}>
+                {chunk}
+              </p>
+            ))}
+          </article>
         )}
       </main>
     </div>

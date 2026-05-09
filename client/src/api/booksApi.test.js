@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   fetchBooks,
+  fetchBook,
   borrowBook,
   returnBook,
   fetchMyBooks,
@@ -28,6 +29,23 @@ describe("booksApi", () => {
     expect(decodeURIComponent(url)).toContain("война");
     expect(url).toContain("genre=Novel");
     expect(url).toContain("page=2");
+  });
+
+  it("fetchBook requests single book by id", async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ _id: "abc", title: "Тест", author: "Автор", borrowedByMe: false }),
+    });
+
+    await fetchBook("abc");
+
+    expect(fetch).toHaveBeenCalledWith(
+      expect.stringContaining("/api/books/abc"),
+      expect.objectContaining({
+        method: "GET",
+        credentials: "include",
+      })
+    );
   });
 
   it("fetchBooks returns books and pages", async () => {

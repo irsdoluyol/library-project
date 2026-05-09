@@ -60,12 +60,30 @@
 
 .bookList__item {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.4rem 0.6rem;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  padding: 0.55rem 0.65rem;
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
+}
+
+.bookList__itemTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.bookList__itemBottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem 0.85rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid var(--color-border);
 }
 
 .bookList__info {
@@ -88,16 +106,29 @@
   color: var(--color-text-muted);
 }
 
+.bookList__description {
+  font-family: var(--font-body);
+  font-size: 0.94rem;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .bookList__uploads {
   display: flex;
-  gap: 0.5rem;
-  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
 }
 
 .bookList__actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.35rem;
-  flex-shrink: 0;
+  align-items: center;
 }
 
 .bookList__fileIcon {
@@ -122,18 +153,6 @@
   object-position: center center;
   border-radius: 4px;
   background: var(--color-bg-input, #f0ede8);
-}
-
-.bookList__coverUpload,
-.bookList__fileUpload {
-  cursor: pointer;
-  font-size: 0.95rem;
-  color: var(--color-burgundy, #7c2d37);
-}
-
-.bookList__coverUpload:hover,
-.bookList__fileUpload:hover {
-  text-decoration: underline;
 }
 
 .bookList__coverCheck {

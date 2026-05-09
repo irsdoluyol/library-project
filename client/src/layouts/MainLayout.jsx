@@ -2,8 +2,9 @@ import { useMemo, useState, useEffect, useRef } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/useAuth.js";
 import Footer from "../components/layout/Footer.jsx";
-import CatalogSearchBar from "../components/catalog/CatalogSearchBar.jsx";
+import CatalogSearch from "../components/catalog/CatalogSearch.jsx";
 import FeedbackWidget from "../components/feedback/FeedbackWidget.jsx";
+import UserMonogram from "../components/common/UserMonogram.jsx";
 import layoutStyles from "./MainLayout.module.css";
 import sidebarStyles from "./Sidebar.module.css";
 import headerStyles from "./Header.module.css";
@@ -64,12 +65,18 @@ const FACTS = [
   "Книги делают людей более открытыми новому.",
 ];
 
+const MY_BOOKS_GUEST_MODAL = {
+  title: "Войдите в аккаунт",
+  text: "Войдите или зарегистрируйтесь, чтобы открыть раздел «Мои книги».",
+  loginFrom: "/my-books",
+};
+
 function MainLayout() {
   const location = useLocation();
   const { user, isAdmin, logout } = useAuth();
   const mainRef = useRef(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showMyBooksLoginModal, setShowMyBooksLoginModal] = useState(false);
   const showFact = location.pathname === "/";
 
   useEffect(() => {
@@ -132,7 +139,7 @@ function MainLayout() {
                   key={to}
                   type="button"
                   className={`${sidebarStyles.sidebar__navItem} ${sidebarStyles["sidebar__navItem--button"]}`}
-                  onClick={() => setShowLoginModal(true)}
+                  onClick={() => setShowMyBooksLoginModal(true)}
                 >
                   {label}
                 </button>
@@ -152,9 +159,11 @@ function MainLayout() {
         <div className={sidebarStyles.sidebar__footer}>
           {user ? (
             <div className={sidebarStyles.sidebar__user}>
-              <div className={sidebarStyles.sidebar__avatar}>
-                {(user.name?.[0] || user.email?.[0] || "?").toUpperCase()}
-              </div>
+              <UserMonogram
+                className={sidebarStyles.sidebar__avatar}
+                value={user.name?.[0] || user.email?.[0] || "?"}
+                title={[user.name, user.surname].filter(Boolean).join(" ") || user.email}
+              />
               <span className={sidebarStyles.sidebar__userName}>
                 {[user.name, user.surname].filter(Boolean).join(" ") || user.email}
               </span>
@@ -199,19 +208,18 @@ function MainLayout() {
               <button
                 type="button"
                 className={headerStyles.header__navLink}
-                onClick={() => setShowLoginModal(true)}
+                onClick={() => setShowMyBooksLoginModal(true)}
               >
                 Мои книги
               </button>
             )}
             {user ? (
               <>
-                <div
+                <UserMonogram
                   className={headerStyles.header__avatar}
+                  value={user.name?.[0] || user.email?.[0] || "?"}
                   title={[user.name, user.surname].filter(Boolean).join(" ") || user.email}
-                >
-                  {(user.name?.[0] || user.email?.[0] || "?").toUpperCase()}
-                </div>
+                />
                 <button
                   type="button"
                   className={headerStyles.header__logout}
@@ -245,7 +253,7 @@ function MainLayout() {
           </div>
         )}
 
-        {showFact && <CatalogSearchBar />}
+        {showFact && <CatalogSearch />}
 
         <main ref={mainRef} className={layoutStyles.main} tabIndex={-1}>
           <Outlet />
@@ -253,43 +261,52 @@ function MainLayout() {
         <Footer />
       </div>
 
-      {showLoginModal && (
+      {showMyBooksLoginModal ? (
         <div
           className={layoutStyles.modalOverlay}
-          onClick={() => setShowLoginModal(false)}
+          onClick={() => setShowMyBooksLoginModal(false)}
           role="dialog"
           aria-modal="true"
-          aria-labelledby="login-modal-title"
+          aria-labelledby="my-books-login-modal-title"
         >
           <div
             className={layoutStyles.modal}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 id="login-modal-title" className={layoutStyles.modalTitle}>
-              Войдите в аккаунт
-            </h2>
-            <p className={layoutStyles.modalText}>
-              Войдите или зарегистрируйтесь, чтобы просмотреть свои книги.
-            </p>
+            <div className={layoutStyles.modalHeader}>
+              <h2 id="my-books-login-modal-title" className={layoutStyles.modalTitle}>
+                {MY_BOOKS_GUEST_MODAL.title}
+              </h2>
+              <button
+                type="button"
+                className={layoutStyles.modalClose}
+                onClick={() => setShowMyBooksLoginModal(false)}
+                aria-label="Закрыть"
+              >
+                ×
+              </button>
+            </div>
+            <p className={layoutStyles.modalText}>{MY_BOOKS_GUEST_MODAL.text}</p>
             <div className={layoutStyles.modalActions}>
               <Link
                 to="/login"
+                state={{ from: MY_BOOKS_GUEST_MODAL.loginFrom }}
                 className="button button--primary"
-                onClick={() => setShowLoginModal(false)}
+                onClick={() => setShowMyBooksLoginModal(false)}
               >
                 Войти
               </Link>
-              <button
-                type="button"
-                className="button button--ghost"
-                onClick={() => setShowLoginModal(false)}
+              <Link
+                to="/register"
+                className="button button--outline"
+                onClick={() => setShowMyBooksLoginModal(false)}
               >
-                Закрыть
-              </button>
+                Регистрация
+              </Link>
             </div>
           </div>
         </div>
-      )}
+      ) : null}
 
       <FeedbackWidget />
     </div>

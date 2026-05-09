@@ -1,9 +1,10 @@
 import express from "express";
-import { protect } from "../middleware/authMiddleware.js";
+import { protect, optionalProtect } from "../middleware/authMiddleware.js";
 import { checkRole } from "../middleware/roleMiddleware.js";
 import { uploadBookFile as multerUpload, uploadCover as multerCover } from "../config/multer.js";
 import {
   getBooks,
+  getBookById,
   createBook,
   updateBook,
   deleteBook,
@@ -28,6 +29,7 @@ router.get("/:id/cover", getCover);
 router.post("/:id/borrow", protect, borrowBook);
 router.post("/:id/return", protect, returnBook);
 router.get("/:id/read", protect, readBookFile);
+router.get("/:id", optionalProtect, getBookById);
 
 router.post("/", protect, checkRole("admin"), createBook);
 router.put("/:id", protect, checkRole("admin"), updateBook);

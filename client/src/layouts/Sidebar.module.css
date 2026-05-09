@@ -183,17 +183,7 @@
 }
 
 .sidebar__avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(221, 190, 195, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #f8f4ef;
-  font-weight: 600;
-  font-size: 0.95rem;
+  margin-bottom: 0.1rem;
 }
 
 .sidebar__userName {

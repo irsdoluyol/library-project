@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import BookCard from "./BookCard.jsx";
 
 describe("BookCard", () => {
@@ -11,42 +12,22 @@ describe("BookCard", () => {
   };
 
   it("renders book title and author", () => {
-    render(<BookCard book={defaultBook} />);
+    render(
+      <MemoryRouter>
+        <BookCard book={defaultBook} />
+      </MemoryRouter>
+    );
     expect(screen.getByText("Война и мир")).toBeTruthy();
     expect(screen.getByText("Л. Толстой")).toBeTruthy();
   });
 
-  it("shows borrow button when user is logged in and book is available", () => {
+  it("links to book detail for everyone", () => {
     render(
-      <BookCard book={defaultBook} isLoggedIn onBorrow={vi.fn()} pendingBorrowId={null} />
+      <MemoryRouter>
+        <BookCard book={defaultBook} />
+      </MemoryRouter>
     );
-    expect(screen.getByRole("button", { name: /читать/i })).toBeTruthy();
-  });
-
-  it("shows unavailable text when book is not available", () => {
-    render(
-      <BookCard
-        book={{ ...defaultBook, available: false }}
-        isLoggedIn
-        onBorrow={vi.fn()}
-        pendingBorrowId={null}
-      />
-    );
-    expect(screen.getByText("Недоступно")).toBeTruthy();
-  });
-
-  it("calls onBorrow when borrow button is clicked", () => {
-    const onBorrow = vi.fn();
-    render(
-      <BookCard book={defaultBook} isLoggedIn onBorrow={onBorrow} pendingBorrowId={null} />
-    );
-    fireEvent.click(screen.getByRole("button", { name: /читать/i }));
-    expect(onBorrow).toHaveBeenCalledWith("1");
-  });
-
-  it("does not show actions when user is not logged in", () => {
-    render(<BookCard book={defaultBook} isLoggedIn={false} />);
-    expect(screen.queryByRole("button", { name: /читать/i })).toBeNull();
-    expect(screen.queryByText("Недоступно")).toBeNull();
+    const link = screen.getByRole("link", { name: /подробнее/i });
+    expect(link.getAttribute("href")).toBe("/book/1");
   });
 });

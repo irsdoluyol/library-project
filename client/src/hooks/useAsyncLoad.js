@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 export function useAsyncLoad(loadFn, deps = []) {
   const [data, setData] = useState(null);
@@ -7,28 +7,32 @@ export function useAsyncLoad(loadFn, deps = []) {
   const loadFnRef = useRef(loadFn);
   loadFnRef.current = loadFn;
 
+  const runLoad = useCallback(async (cancelledRef) => {
+    setLoading(true);
+    setError("");
+    try {
+      const result = await loadFnRef.current();
+      if (cancelledRef?.cancelled) return result;
+      setData(result);
+      return result;
+    } catch (err) {
+      if (!cancelledRef?.cancelled) setError(err.message || "Failed to load");
+      throw err;
+    } finally {
+      if (!cancelledRef?.cancelled) setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    let cancelled = false;
-
-    const load = async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const result = await loadFnRef.current();
-        if (!cancelled) setData(result);
-      } catch (err) {
-        if (!cancelled) setError(err.message || "Failed to load");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    load();
+    const cancelledRef = { cancelled: false };
+    runLoad(cancelledRef).catch(() => {});
     return () => {
-      cancelled = true;
+      cancelledRef.cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
-  return { data, setData, loading, error };
+  const reload = useCallback(() => runLoad(null), [runLoad]);
+
+  return { data, setData, loading, error, reload };
 }

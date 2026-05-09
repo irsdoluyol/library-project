@@ -1,6 +1,7 @@
 import { getCoverUrl } from "../../api/booksApi.js";
 import Pagination from "../common/Pagination.jsx";
 import pageStyles from "../../styles/common/Page.module.css";
+import uploadStyles from "./adminUploadTrigger.module.css";
 import styles from "./AdminBookList.module.css";
 
 function AdminBookList({
@@ -67,66 +68,97 @@ function AdminBookList({
           <ul className={styles.bookList__list}>
             {books.map((book) => (
               <li key={book._id} className={styles.bookList__item}>
-                <div className={styles.bookList__coverCell}>
-                  {book.coverPath ? (
-                    <>
-                      <img
-                        src={getCoverUrl(book._id)}
-                        alt=""
-                        className={styles.bookList__coverImg}
+                <div className={styles.bookList__itemTop}>
+                  <div className={styles.bookList__coverCell}>
+                    {book.coverPath ? (
+                      <>
+                        <img
+                          src={getCoverUrl(book._id)}
+                          alt=""
+                          className={styles.bookList__coverImg}
+                        />
+                        <span className={styles.bookList__coverCheck} aria-hidden>
+                          ✓
+                        </span>
+                      </>
+                    ) : null}
+                  </div>
+                  <div className={styles.bookList__info}>
+                    <span className={styles.bookList__title}>{book.title || "—"}</span>
+                    <span className={styles.bookList__meta}>
+                      {[book.author, book.genre, book.year].filter(Boolean).join(", ") || "—"}
+                      {book.filePath && (
+                        <span className={styles.bookList__fileIcon} aria-hidden>
+                          ■
+                        </span>
+                      )}
+                    </span>
+                    <span className={styles.bookList__description}>
+                      {book.description?.trim() || "Описание не добавлено."}
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.bookList__itemBottom}>
+                  <div className={styles.bookList__uploads}>
+                    <label
+                      className={`${uploadStyles.uploadTrigger} ${uploadStyles.uploadTriggerCompact} ${saving ? uploadStyles.uploadTriggerDisabled : ""}`}
+                      title={
+                        book.coverPath
+                          ? "Заменить обложку (JPG, PNG, WebP)"
+                          : "Загрузить обложку (JPG, PNG, WebP)"
+                      }
+                    >
+                      <span className={uploadStyles.uploadTriggerCaption}>
+                        {book.coverPath ? "Заменить" : "Обложка"}
+                      </span>
+                      <input
+                        type="file"
+                        accept=".jpg,.jpeg,.png,.webp"
+                        className={uploadStyles.uploadTriggerInput}
+                        onChange={(e) => handleCoverChange(book._id, e)}
+                        disabled={saving}
                       />
-                      <span className={styles.bookList__coverCheck} aria-hidden>✓</span>
-                    </>
-                  ) : null}
-                </div>
-                <div className={styles.bookList__info}>
-                  <span className={styles.bookList__title}>{book.title || "—"}</span>
-                  <span className={styles.bookList__meta}>
-                    {[book.author, book.genre, book.year].filter(Boolean).join(", ") || "—"}
-                    {book.filePath && (
-                      <span className={styles.bookList__fileIcon} aria-hidden> ■</span>
-                    )}
-                  </span>
-                </div>
-                <div className={styles.bookList__uploads}>
-                  <label className={styles.bookList__coverUpload}>
-                    <input
-                      type="file"
-                      accept=".jpg,.jpeg,.png,.webp"
-                      onChange={(e) => handleCoverChange(book._id, e)}
+                    </label>
+                    <label
+                      className={`${uploadStyles.uploadTrigger} ${uploadStyles.uploadTriggerCompact} ${saving ? uploadStyles.uploadTriggerDisabled : ""}`}
+                      title={
+                        book.filePath
+                          ? "Заменить файл книги (PDF или TXT)"
+                          : "Загрузить файл книги (PDF или TXT)"
+                      }
+                    >
+                      <span className={uploadStyles.uploadTriggerCaption}>
+                        {book.filePath
+                          ? `📄 ${(book.fileType || "pdf").toUpperCase()}`
+                          : "Файл книги"}
+                      </span>
+                      <input
+                        type="file"
+                        accept=".pdf,.txt"
+                        className={uploadStyles.uploadTriggerInput}
+                        onChange={(e) => handleFileChange(book._id, e)}
+                        disabled={saving}
+                      />
+                    </label>
+                  </div>
+                  <div className={styles.bookList__actions}>
+                    <button
+                      type="button"
+                      className="button button--ghost"
+                      onClick={() => onEdit(book)}
                       disabled={saving}
-                      style={{ display: "none" }}
-                    />
-                    {book.coverPath ? "Заменить" : "Загрузить"}
-                  </label>
-                  <label className={styles.bookList__fileUpload}>
-                    <input
-                      type="file"
-                      accept=".pdf,.txt"
-                      onChange={(e) => handleFileChange(book._id, e)}
+                    >
+                      Редактировать
+                    </button>
+                    <button
+                      type="button"
+                      className="button button--ghost"
+                      onClick={() => onDelete(book._id)}
                       disabled={saving}
-                      style={{ display: "none" }}
-                    />
-                    {book.filePath ? `📄 ${book.fileType || "PDF"}` : "Загрузить"}
-                  </label>
-                </div>
-                <div className={styles.bookList__actions}>
-                  <button
-                    type="button"
-                    className="button button--ghost"
-                    onClick={() => onEdit(book)}
-                    disabled={saving}
-                  >
-                    Редакт.
-                  </button>
-                  <button
-                    type="button"
-                    className="button button--ghost"
-                    onClick={() => onDelete(book._id)}
-                    disabled={saving}
-                  >
-                    Удалить
-                  </button>
+                    >
+                      Удалить
+                    </button>
+                  </div>
                 </div>
               </li>
             ))}

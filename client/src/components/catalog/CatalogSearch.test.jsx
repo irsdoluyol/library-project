@@ -1,70 +1,26 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import CatalogSearch from "./CatalogSearch.jsx";
 
+function renderSearch(initialPath = "/") {
+  return render(
+    <MemoryRouter initialEntries={[initialPath]}>
+      <CatalogSearch />
+    </MemoryRouter>
+  );
+}
+
 describe("CatalogSearch", () => {
-  it("renders search input and genre select", () => {
-    render(
-      <CatalogSearch
-        search=""
-        genre=""
-        onSearchChange={vi.fn()}
-        onGenreChange={vi.fn()}
-      />
-    );
+  it("renders search input and genre button", () => {
+    renderSearch("/");
     expect(screen.getByPlaceholderText(/поиск/i)).toBeTruthy();
-    expect(screen.getByRole("combobox")).toBeTruthy();
+    expect(screen.getByRole("button", { name: /жанр/i })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /найти/i })).toBeTruthy();
   });
 
-  it("displays current search value", () => {
-    render(
-      <CatalogSearch
-        search="Толстой"
-        genre=""
-        onSearchChange={vi.fn()}
-        onGenreChange={vi.fn()}
-      />
-    );
+  it("shows current search from URL", () => {
+    renderSearch("/?search=%D0%A2%D0%BE%D0%BB%D1%81%D1%82%D0%BE%D0%B9");
     expect(screen.getByDisplayValue("Толстой")).toBeTruthy();
-  });
-
-  it("calls onSearchChange when input changes", () => {
-    const onSearchChange = vi.fn();
-    render(
-      <CatalogSearch
-        search=""
-        genre=""
-        onSearchChange={onSearchChange}
-        onGenreChange={vi.fn()}
-      />
-    );
-    fireEvent.change(screen.getByPlaceholderText(/поиск/i), { target: { value: "книга" } });
-    expect(onSearchChange).toHaveBeenCalledWith("книга");
-  });
-
-  it("calls onGenreChange when select changes", () => {
-    const onGenreChange = vi.fn();
-    render(
-      <CatalogSearch
-        search=""
-        genre=""
-        onSearchChange={vi.fn()}
-        onGenreChange={onGenreChange}
-      />
-    );
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "Фантастика" } });
-    expect(onGenreChange).toHaveBeenCalledWith("Фантастика");
-  });
-
-  it("has All genres option", () => {
-    render(
-      <CatalogSearch
-        search=""
-        genre=""
-        onSearchChange={vi.fn()}
-        onGenreChange={vi.fn()}
-      />
-    );
-    expect(screen.getByRole("option", { name: /все жанры/i })).toBeTruthy();
   });
 });

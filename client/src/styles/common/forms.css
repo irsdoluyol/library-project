@@ -169,15 +169,38 @@
   color: #c0392b;
 }
 
+.auth__ctaCluster {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+}
+
+.auth__ctaCluster .auth__submit {
+  margin-top: 0;
+  width: 100%;
+}
+
 .auth__submit {
   margin-top: 0.5rem;
   width: 100%;
+}
+
+.auth__errorBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .auth__verifyLink {
   margin: 0;
   text-align: center;
   font-size: 0.88rem;
+}
+
+.auth__verifyLink--afterError {
+  text-align: left;
 }
 
 .auth__verifyLink a {
@@ -190,8 +213,30 @@
   text-decoration: underline;
 }
 
+.auth__footerNote {
+  margin: 0.85rem 0 0;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.auth__footerNote a {
+  color: var(--color-text-muted);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.2);
+}
+
+.auth__footerNote a:hover {
+  color: var(--color-burgundy);
+  text-decoration-color: var(--color-burgundy);
+}
+
 .auth__switch {
-  margin: 1.25rem 0 0;
+  margin: 0;
   font-size: 0.9rem;
   color: var(--color-text-muted);
   text-align: center;

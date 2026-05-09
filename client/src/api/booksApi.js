@@ -1,6 +1,10 @@
 import { API_URL } from "../config.js";
 import { request } from "./request.js";
 
+export async function fetchBook(id) {
+  return request(`/books/${id}`);
+}
+
 export async function fetchBooks({
   search = "",
   genre = "",
@@ -44,6 +48,11 @@ export async function deleteBook(id) {
 
 export function getCoverUrl(bookId) {
   return `${API_URL}/books/${bookId}/cover`;
+}
+
+export function getBookReaderUrl(bookId, fileType) {
+  const base = `${API_URL}/books/${bookId}/read`;
+  return fileType === "txt" ? `${base}?plain=1` : base;
 }
 
 export async function uploadBookCover(bookId, file) {

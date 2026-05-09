@@ -24,6 +24,7 @@ export function useAdminBooks() {
   const [error, setError] = useState("");
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [pendingBookFile, setPendingBookFile] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -45,7 +46,10 @@ export function useAdminBooks() {
     return () => { cancelled = true; };
   }, []);
 
-  const resetForm = () => setForm(emptyForm);
+  const resetForm = () => {
+    setForm(emptyForm);
+    setPendingBookFile(null);
+  };
 
   const handleFormChange = (event) => {
     const { name, value } = event.target;
@@ -53,6 +57,7 @@ export function useAdminBooks() {
   };
 
   const handleEdit = (book) => {
+    setPendingBookFile(null);
     setForm({
       id: book._id,
       title: book.title || "",
@@ -105,6 +110,16 @@ export function useAdminBooks() {
     }
   };
 
+  const handleSelectPendingBookFile = (file) => {
+    if (!file) return;
+    const ext = (file.name || "").toLowerCase();
+    if (!ext.endsWith(".pdf") && !ext.endsWith(".txt")) {
+      toast.error("Допустимы только PDF и TXT файлы");
+      return;
+    }
+    setPendingBookFile(file);
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm("Удалить эту книгу?")) return;
     try {
@@ -141,12 +156,28 @@ export function useAdminBooks() {
           prev.map((b) => (b._id === updated._id ? updated : b))
         );
         toast.success("Книга обновлена");
+        resetForm();
       } else {
         const created = await createBook(payload);
-        setBooks((prev) => [created, ...prev]);
-        toast.success("Книга добавлена");
+        let finalBook = created;
+        if (pendingBookFile) {
+          try {
+            const uploadRes = await uploadBookFile(created._id, pendingBookFile);
+            finalBook = uploadRes.book ?? created;
+            toast.success("Книга добавлена и файл загружен");
+          } catch (uploadErr) {
+            toast.error(
+              `${uploadErr.message || "Не удалось загрузить файл"}. Карточка книги сохранена — файл можно добавить через список ниже.`
+            );
+          } finally {
+            setPendingBookFile(null);
+          }
+        } else {
+          toast.success("Книга добавлена");
+        }
+        setBooks((prev) => [finalBook, ...prev.filter((b) => String(b._id) !== String(finalBook._id))]);
+        resetForm();
       }
-      resetForm();
     } catch (err) {
       toast.error(err.message || "Ошибка сохранения");
     } finally {
@@ -160,12 +191,14 @@ export function useAdminBooks() {
     error,
     form,
     saving,
+    pendingBookFileLabel: pendingBookFile?.name || "",
     resetForm,
     handleFormChange,
     handleEdit,
     handleDelete,
     handleUpload,
     handleUploadCover,
+    handleSelectPendingBookFile,
     handleSubmit,
   };
 }

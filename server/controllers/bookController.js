@@ -6,12 +6,64 @@ import Borrowing from "../models/Borrowing.js";
 import { uploadDir, coverDir } from "../config/multer.js";
 import { logCatalog, logBorrowing } from "../utils/logger.js";
 import { escapeRegex } from "../utils/escapeRegex.js";
+import {
+  bestMatchDistance,
+  maxEditDistanceForQueryLength,
+  searchMatchTier,
+} from "../utils/levenshtein.js";
 
 const isValidId = (id) => id && mongoose.Types.ObjectId.isValid(id) && String(new mongoose.Types.ObjectId(id)) === String(id);
+
+const FUZZY_SCAN_LIMIT = 3000;
 
 const ALLOWED_SORT = ["createdAt", "-createdAt", "title", "-title", "author", "-author", "year", "-year"];
 const MAX_LIMIT = 100;
 const DEFAULT_LIMIT = 12;
+
+const CROSS_SCRIPT_LOOKALIKE_TO_LATIN = {
+  а: "a",
+  А: "A",
+  в: "b",
+  В: "B",
+  с: "c",
+  С: "C",
+  е: "e",
+  Е: "E",
+  н: "h",
+  Н: "H",
+  к: "k",
+  К: "K",
+  м: "m",
+  М: "M",
+  о: "o",
+  О: "O",
+  р: "p",
+  Р: "P",
+  т: "t",
+  Т: "T",
+  у: "y",
+  У: "Y",
+  х: "x",
+  Х: "X",
+};
+
+function normalizeLookalikeChars(value) {
+  return String(value)
+    .split("")
+    .map((char) => {
+      const converted = CROSS_SCRIPT_LOOKALIKE_TO_LATIN[char];
+      return converted || char;
+    })
+    .join("");
+}
+
+function searchVariantsForLayout(rawSearch) {
+  const base = String(rawSearch || "").trim();
+  if (!base) return [];
+  const variants = new Set([base]);
+  variants.add(normalizeLookalikeChars(base));
+  return [...variants].filter(Boolean);
+}
 
 function normalizeSortParam(raw) {
   if (raw == null) return "title";
@@ -20,6 +72,20 @@ function normalizeSortParam(raw) {
   if (!trimmed) return "title";
   const base = trimmed.includes(":") ? trimmed.split(":")[0].trim() : trimmed;
   return ALLOWED_SORT.includes(base) ? base : "title";
+}
+
+function mongoSortFieldsFromParam(sortParam) {
+  const map = {
+    createdAt: { createdAt: 1 },
+    "-createdAt": { createdAt: -1 },
+    title: { title: 1 },
+    "-title": { title: -1 },
+    author: { author: 1 },
+    "-author": { author: -1 },
+    year: { year: 1 },
+    "-year": { year: -1 },
+  };
+  return map[sortParam] || { title: 1 };
 }
 
 export const getBooks = async (req, res) => {
@@ -31,12 +97,20 @@ export const getBooks = async (req, res) => {
     const sort = normalizeSortParam(sortRaw);
 
     const query = {};
+    let searchEscaped = "";
+    let searchVariants = [];
 
     if (search && typeof search === "string") {
-      const escaped = escapeRegex(search.trim());
-      if (escaped) {
-        const searchRegex = { $regex: escaped, $options: "i" };
-        query.$or = [{ title: searchRegex }, { author: searchRegex }];
+      searchVariants = searchVariantsForLayout(search);
+      const escapedVariants = searchVariants
+        .map((v) => escapeRegex(v))
+        .filter(Boolean);
+      if (escapedVariants.length) {
+        searchEscaped = escapedVariants[0];
+        query.$or = escapedVariants.flatMap((escaped) => {
+          const searchRegex = { $regex: escaped, $options: "i" };
+          return [{ title: searchRegex }, { author: searchRegex }];
+        });
       }
     }
 
@@ -45,22 +119,175 @@ export const getBooks = async (req, res) => {
       if (g) query.genre = { $regex: `^${escapeRegex(g)}$`, $options: "i" };
     }
 
-    const books = await Book.find(query)
-      .sort(sort)
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+    const searchTrim = typeof search === "string" ? search.trim() : "";
+    const useSearchRelevance = searchTrim.length > 0 && searchEscaped;
 
-    const total = await Book.countDocuments(query);
+    let books;
+    let total;
+    let fuzzy = false;
+
+    if (useSearchRelevance) {
+      const sortStage = { _searchRank: 1, ...mongoSortFieldsFromParam(sort) };
+      const pipeline = [
+        { $match: query },
+        {
+          $addFields: {
+            _searchRank: {
+              $switch: {
+                branches: [
+                  ...searchVariants.map((variant) => ({
+                    case: {
+                      $regexMatch: {
+                        input: { $ifNull: ["$title", ""] },
+                        regex: `^${escapeRegex(variant)}`,
+                        options: "i",
+                      },
+                    },
+                    then: 0,
+                  })),
+                  ...searchVariants.map((variant) => ({
+                    case: {
+                      $regexMatch: {
+                        input: { $ifNull: ["$title", ""] },
+                        regex: escapeRegex(variant),
+                        options: "i",
+                      },
+                    },
+                    then: 1,
+                  })),
+                  ...searchVariants.map((variant) => ({
+                    case: {
+                      $regexMatch: {
+                        input: { $ifNull: ["$author", ""] },
+                        regex: `^${escapeRegex(variant)}`,
+                        options: "i",
+                      },
+                    },
+                    then: 2,
+                  })),
+                  ...searchVariants.map((variant) => ({
+                    case: {
+                      $regexMatch: {
+                        input: { $ifNull: ["$author", ""] },
+                        regex: escapeRegex(variant),
+                        options: "i",
+                      },
+                    },
+                    then: 3,
+                  })),
+                ],
+                default: 4,
+              },
+            },
+          },
+        },
+        { $sort: sortStage },
+        { $skip: (page - 1) * limit },
+        { $limit: limit },
+        { $project: { _searchRank: 0 } },
+      ];
+      [books, total] = await Promise.all([
+        Book.aggregate(pipeline),
+        Book.countDocuments(query),
+      ]);
+    } else {
+      books = await Book.find(query)
+        .sort(sort)
+        .skip((page - 1) * limit)
+        .limit(Number(limit))
+        .lean();
+      total = await Book.countDocuments(query);
+    }
+
+    if (searchTrim.length >= 2 && total === 0) {
+      const maxDist = maxEditDistanceForQueryLength(searchTrim.length);
+      const fuzzyQueries = searchVariantsForLayout(searchTrim);
+      const genreOnly = {};
+      if (genre && typeof genre === "string") {
+        const g = genre.trim();
+        if (g) genreOnly.genre = { $regex: `^${escapeRegex(g)}$`, $options: "i" };
+      }
+      const candidates = await Book.find(genreOnly).sort(sort).limit(FUZZY_SCAN_LIMIT).lean();
+
+      const scored = candidates
+        .map((doc) => ({
+          doc,
+          d: Math.min(
+            ...fuzzyQueries.map((q) => bestMatchDistance(q, doc.title, doc.author))
+          ),
+        }))
+        .filter(({ d }) => d <= maxDist)
+        .sort((a, b) => {
+          const ta = Math.min(
+            ...fuzzyQueries.map((q) => searchMatchTier(q, a.doc.title, a.doc.author))
+          );
+          const tb = Math.min(
+            ...fuzzyQueries.map((q) => searchMatchTier(q, b.doc.title, b.doc.author))
+          );
+          if (ta !== tb) return ta - tb;
+          if (a.d !== b.d) return a.d - b.d;
+          return String(a.doc.title).localeCompare(String(b.doc.title), "ru");
+        });
+
+      total = scored.length;
+      const pages = Math.ceil(total / limit) || 1;
+      const slice = scored.slice((page - 1) * limit, page * limit);
+      books = slice.map(({ doc }) => doc);
+      fuzzy = total > 0;
+
+      return res.json({
+        total,
+        page: Number(page),
+        pages,
+        books,
+        fuzzy,
+      });
+    }
 
     res.json({
       total,
       page: Number(page),
       pages: Math.ceil(total / limit),
       books,
+      fuzzy,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Ошибка получения книг" });
+  }
+};
+
+export const getBookById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!isValidId(id)) {
+      return res.status(400).json({ message: "Некорректный ID книги" });
+    }
+    const book = await Book.findById(id).lean();
+    if (!book) {
+      return res.status(404).json({ message: "Книга не найдена" });
+    }
+    const userId = req.user?.id || req.user?._id;
+    let borrowedByMe = false;
+    if (userId) {
+      const activeBorrow = await Borrowing.findOne({
+        user: userId,
+        book: id,
+        status: "active",
+      })
+        .select("_id")
+        .lean();
+      borrowedByMe = !!activeBorrow;
+    }
+    const { filePath, ...bookRest } = book;
+    res.json({
+      ...bookRest,
+      ...(userId ? { filePath } : { hasBookFile: Boolean(filePath) }),
+      borrowedByMe,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Ошибка получения книги" });
   }
 };
 
@@ -357,6 +584,8 @@ export const readBookFile = async (req, res) => {
     if (book.fileType === "pdf") {
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader("Content-Disposition", `inline; filename="${encodeURIComponent(book.title || "book")}.pdf"`);
+      res.setHeader("Cache-Control", "private, no-store");
+      res.setHeader("X-Content-Type-Options", "nosniff");
       const stream = fs.createReadStream(filePath);
       stream.on("error", (err) => {
         console.error("[readBookFile] stream error:", err);
@@ -367,6 +596,17 @@ export const readBookFile = async (req, res) => {
       stream.pipe(res);
     } else {
       const text = fs.readFileSync(filePath, "utf-8");
+      const openInBrowser = req.query.plain === "1" || req.query.view === "raw";
+      if (openInBrowser) {
+        const safeName = encodeURIComponent(
+          `${(book.title || "book").replace(/[/\\]/g, " ")}.txt`
+        );
+        res.setHeader("Content-Type", "text/plain; charset=utf-8");
+        res.setHeader("Content-Disposition", `inline; filename*=UTF-8''${safeName}`);
+        res.setHeader("Cache-Control", "private, no-store");
+        res.setHeader("X-Content-Type-Options", "nosniff");
+        return res.send(text);
+      }
       res.json({ content: text });
     }
   } catch (error) {

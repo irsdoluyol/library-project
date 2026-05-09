@@ -9,13 +9,23 @@ import { buildClientVerifyUrl, sendVerificationEmail } from "../utils/mail.js";
 const VERIFY_TTL_MS = 48 * 60 * 60 * 1000;
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-  path: "/",
-};
+
+function buildAuthCookieOptions() {
+  const isProd = process.env.NODE_ENV === "production";
+  const crossOrigin =
+    process.env.COOKIE_CROSS_ORIGIN === "true" || process.env.COOKIE_CROSS_ORIGIN === "1";
+  const sameSite = crossOrigin ? "none" : isProd ? "strict" : "lax";
+  const secure = sameSite === "none" || isProd;
+  return {
+    httpOnly: true,
+    secure,
+    sameSite,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    path: "/",
+  };
+}
+
+const COOKIE_OPTIONS = buildAuthCookieOptions();
 
 export const registerUser = async (req, res) => {
   try {
@@ -205,7 +215,12 @@ function setAuthCookie(res, user) {
 }
 
 export const logoutUser = (req, res) => {
-  res.clearCookie("token", { path: "/" });
+  res.clearCookie("token", {
+    path: COOKIE_OPTIONS.path,
+    httpOnly: COOKIE_OPTIONS.httpOnly,
+    secure: COOKIE_OPTIONS.secure,
+    sameSite: COOKIE_OPTIONS.sameSite,
+  });
   res.json({ message: "Выход выполнен" });
 };
 

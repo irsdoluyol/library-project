@@ -5,6 +5,7 @@ import MyBooksPage from "./pages/books/MyBooksPage.jsx";
 import FavoritesPage from "./pages/favorites/FavoritesPage.jsx";
 import MyRequestsPage from "./pages/requests/MyRequestsPage.jsx";
 import ReadBookPage from "./pages/books/ReadBookPage.jsx";
+import BookDetailPage from "./pages/books/BookDetailPage.jsx";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage.jsx";
 import AdminRequestsPage from "./pages/admin/AdminRequestsPage.jsx";
 import AdminUsersPage from "./pages/admin/AdminUsersPage.jsx";
@@ -15,13 +16,16 @@ import TermsPage from "./pages/legal/TermsPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
 import PrivateRoute from "./routes/PrivateRoute.jsx";
 import AdminRoute from "./routes/AdminRoute.jsx";
+import { AuthPromptProvider } from "./context/AuthPromptContext.jsx";
 
 function App() {
   return (
     <BrowserRouter>
+      <AuthPromptProvider>
       <Routes>
         <Route element={<MainLayout />}>
           <Route index element={<CatalogPage />} />
+          <Route path="/book/:id" element={<BookDetailPage />} />
           <Route element={<PrivateRoute />}>
             <Route path="/my-books" element={<MyBooksPage />} />
             <Route path="/favorites" element={<FavoritesPage />} />
@@ -41,6 +45,7 @@ function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </AuthPromptProvider>
     </BrowserRouter>
   );
 }

@@ -1,0 +1,60 @@
+.uploadTrigger {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.52rem 1.15rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-burgundy);
+  background: transparent;
+  border: 1.5px solid var(--color-burgundy);
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.uploadTrigger:hover:not(.uploadTriggerDisabled):not(.uploadTriggerNoHover) {
+  background: rgba(69, 22, 28, 0.07);
+}
+
+.uploadTriggerDisabled {
+  opacity: 0.52;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.uploadTriggerInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.uploadTriggerDisabled .uploadTriggerInput {
+  cursor: not-allowed;
+}
+
+.uploadTriggerCaption {
+  pointer-events: none;
+  text-align: center;
+}
+
+.uploadTriggerCompact {
+  min-height: 2rem;
+  padding: 0.38rem 0.72rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border-width: 1px;
+}

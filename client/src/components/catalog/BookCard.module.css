@@ -12,6 +12,21 @@
   overflow: hidden;
 }
 
+.cardLink {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cardLink:focus-visible {
+  outline: 2px solid var(--color-burgundy);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+
 .book:hover {
   box-shadow: var(--shadow-md);
   transform: scale(1.05);

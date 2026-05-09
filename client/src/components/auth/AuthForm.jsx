@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/useAuth.js";
 import { validateRegister } from "../../utils/validation.js";
@@ -7,6 +7,7 @@ import AuthCard from "./AuthCard.jsx";
 
 function AuthForm({ mode }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, register } = useAuth();
   const isLogin = mode === "login";
 
@@ -37,7 +38,12 @@ function AuthForm({ mode }) {
       setSubmitting(true);
       try {
         await login(email, password);
-        navigate("/");
+        const from = location.state?.from;
+        const target =
+          typeof from === "string" && from.startsWith("/") && !from.startsWith("//")
+            ? from
+            : "/";
+        navigate(target, { replace: true });
       } catch (err) {
         setSubmitError(err.message);
       } finally {
@@ -247,9 +253,14 @@ function AuthForm({ mode }) {
         </label>
 
         {submitError && (
-          <p className="auth__error auth__error--submit" role="alert">
-            {submitError}
-          </p>
+          <div className="auth__errorBlock" role="alert">
+            <p className="auth__error auth__error--submit">{submitError}</p>
+            {isLogin && /подтвердите email/i.test(submitError) && (
+              <p className="auth__verifyLink auth__verifyLink--afterError">
+                <Link to="/verify-email">Запросить письмо с подтверждением снова</Link>
+              </p>
+            )}
+          </div>
         )}
 
         {!isLogin && (
@@ -282,39 +293,41 @@ function AuthForm({ mode }) {
           </div>
         )}
 
-        <button
-          type="submit"
-          className="button button--primary auth__submit"
-          disabled={submitting}
-        >
-          {isLogin
-            ? submitting
-              ? "Вход..."
-              : "Войти"
-            : submitting
-              ? "Создание аккаунта..."
-              : "Зарегистрироваться"}
-        </button>
+        <div className="auth__ctaCluster">
+          <button
+            type="submit"
+            className="button button--primary auth__submit"
+            disabled={submitting}
+          >
+            {isLogin
+              ? submitting
+                ? "Вход..."
+                : "Войти"
+              : submitting
+                ? "Создание аккаунта..."
+                : "Зарегистрироваться"}
+          </button>
+
+          <p className="auth__switch">
+            {isLogin ? (
+              <>
+                Нет аккаунта?{" "}
+                <Link to="/register">Зарегистрироваться</Link>
+              </>
+            ) : (
+              <>
+                Уже есть аккаунт?{" "}
+                <Link to="/login">Войти</Link>
+              </>
+            )}
+          </p>
+        </div>
 
         {isLogin && (
-          <p className="auth__verifyLink">
-            <Link to="/verify-email">Подтвердить email или запросить письмо снова</Link>
+          <p className="auth__footerNote">
+            <Link to="/verify-email">Письмо не пришло или не успели подтвердить?</Link>
           </p>
         )}
-
-        <p className="auth__switch">
-          {isLogin ? (
-            <>
-              Нет аккаунта?{" "}
-              <Link to="/register">Зарегистрироваться</Link>
-            </>
-          ) : (
-            <>
-              Уже есть аккаунт?{" "}
-              <Link to="/login">Войти</Link>
-            </>
-          )}
-        </p>
       </form>
     </AuthCard>
   );

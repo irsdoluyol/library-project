@@ -22,6 +22,8 @@ function AdminDashboardPage() {
     handleDelete,
     handleUpload,
     handleUploadCover,
+    handleSelectPendingBookFile,
+    pendingBookFileLabel,
     handleSubmit,
   } = useAdminBooks();
 
@@ -62,6 +64,9 @@ function AdminDashboardPage() {
           onChange={handleFormChange}
           onSubmit={handleSubmit}
           onCancel={resetForm}
+          onUpload={handleUpload}
+          pendingBookFileLabel={pendingBookFileLabel}
+          onSelectPendingBookFile={handleSelectPendingBookFile}
         />
       </div>
 
