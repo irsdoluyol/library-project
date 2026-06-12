@@ -81,27 +81,8 @@ function AdminUsersPage() {
   };
 
   return (
-    <PageWithHeader
-      className={styles.pageWide}
-      title="Заявки на регистрацию"
-      description="Обычно доступ открывается автоматически по ссылке из письма. Здесь — заявки без подтверждённого email и ручная модерация при необходимости."
-    >
+    <PageWithHeader className={styles.pageWide} title="Заявки на регистрацию">
       <div className={styles.wrapper}>
-        <aside className={styles.callout} aria-labelledby="admin-users-hint-title">
-          <h2 id="admin-users-hint-title" className={styles.calloutTitle}>
-            Как это работает
-          </h2>
-          <p className={styles.calloutText}>
-            В норме человек переходит по ссылке из письма сразу после регистрации — без вашего участия
-            и без очереди. Эта панель нужна, если письмо не дошло: вы можете подтвердить или отклонить
-            заявку вручную.
-          </p>
-          <p className={styles.calloutText}>
-            «Подтвердить» открывает доступ так же, как ссылка в письме. «Отклонить» — пользователь не
-            сможет войти с этим email.
-          </p>
-        </aside>
-
         {error && <p className={styles.error}>{error}</p>}
 
         {loadError && <p className={pageStyles.text}>{loadError}</p>}
@@ -109,12 +90,7 @@ function AdminUsersPage() {
         {loading && <p className={pageStyles.text}>Загрузка...</p>}
 
         {!loading && !loadError && users.length === 0 ? (
-          <p className={styles.empty}>
-            Нет заявок на рассмотрение.
-            <span className={styles.emptyHint}>
-              Новые регистрации появятся здесь после отправки формы на странице «Регистрация».
-            </span>
-          </p>
+          <p className={styles.empty}>Нет заявок на рассмотрение.</p>
         ) : null}
 
         {!loading && !loadError && users.length > 0 ? (

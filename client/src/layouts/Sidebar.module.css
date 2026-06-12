@@ -78,8 +78,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 0.25rem;
   text-decoration: none;
+  padding: 0.15rem 0;
   color: #f8f4ef;
   font-weight: 600;
   font-size: 1.12rem;
@@ -91,28 +93,17 @@
   color: inherit;
 }
 
-.sidebar__logoImg {
-  display: block;
-  height: 48px;
-  width: auto;
-  object-fit: contain;
-  background: transparent;
-  width: auto;
-  object-fit: contain;
+.sidebar__logo:focus-visible {
+  outline: 2px solid rgba(248, 244, 239, 0.85);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .sidebar__logoImg {
   display: block;
   height: 48px;
   width: auto;
-  object-fit: contain;
-  background: transparent;
-}
-
-.sidebar__logoImg {
-  display: block;
-  height: 48px;
-  width: auto;
+  max-width: 100%;
   object-fit: contain;
   background: transparent;
 }

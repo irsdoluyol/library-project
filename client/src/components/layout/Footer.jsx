@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import confetti from "canvas-confetti";
 import styles from "./Footer.module.css";
+import BrandTitle from "../common/BrandTitle.jsx";
 
 const QUOTES = [
   { text: "Книга — мечта, которую держишь в руках.", author: "Нил Гейман" },
@@ -110,8 +111,8 @@ function Footer() {
         </div>
 
         <div className={styles.bottom}>
-          <Link to="/" className={styles.brand}>
-            Онлайн-библиотека
+          <Link to="/" className={styles.brand} data-brand-footer-link aria-label="На главную, Im. Library">
+            <BrandTitle variant="footer" />
           </Link>
           <span className={styles.copyright}>© {year}</span>
         </div>

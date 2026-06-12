@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export function useDocumentTitle(title, suffix = "Онлайн-библиотека") {
+export function useDocumentTitle(title, suffix = "Im. Library") {
   useEffect(() => {
     document.title = title ? `${title} — ${suffix}` : suffix;
     return () => {

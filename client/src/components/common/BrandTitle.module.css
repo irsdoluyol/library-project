@@ -1,0 +1,66 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.prefix,
+.word {
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.prefix {
+  letter-spacing: 0.06em;
+}
+
+.word {
+  letter-spacing: 0.03em;
+}
+
+/* header */
+.root_header {
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.root_header .prefix {
+  color: var(--color-accent);
+}
+
+.root_header .word {
+  color: var(--color-burgundy);
+}
+
+/* footer */
+.root_footer {
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.root_footer .prefix {
+  color: var(--color-accent);
+}
+
+.root_footer .word {
+  color: var(--color-text);
+}
+
+:global([data-brand-header-link]):hover .root_header .prefix {
+  color: var(--color-accent-hover);
+}
+
+:global([data-brand-header-link]):hover .root_header .word {
+  color: var(--color-burgundy-hover);
+}
+
+:global([data-brand-footer-link]):hover .root_footer .prefix {
+  color: var(--color-accent-hover);
+}
+
+:global([data-brand-footer-link]):hover .root_footer .word {
+  color: var(--color-burgundy);
+}

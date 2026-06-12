@@ -76,6 +76,7 @@ export const registerUser = async (req, res) => {
       pending.password = hashedPassword;
       pending.token = token;
       pending.expiresAt = expiresAt;
+      pending.visibleToModerator = true;
       await pending.save();
     } else {
       await PendingRegistration.create({
@@ -85,6 +86,7 @@ export const registerUser = async (req, res) => {
         password: hashedPassword,
         token,
         expiresAt,
+        visibleToModerator: false,
       });
     }
 

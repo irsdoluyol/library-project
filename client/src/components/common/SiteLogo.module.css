@@ -1,0 +1,13 @@
+.root {
+  display: block;
+  flex-shrink: 0;
+  height: 28px;
+  width: auto;
+  aspect-ratio: 76 / 26;
+}
+
+@media (max-width: 768px) {
+  .root {
+    height: 24px;
+  }
+}

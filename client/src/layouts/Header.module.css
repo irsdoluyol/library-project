@@ -17,21 +17,26 @@
 
 .header__logo {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   text-decoration: none;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 1.35rem;
-  line-height: 1.3;
   color: var(--color-burgundy);
-  transition: color 0.2s;
+  transition: opacity 0.2s;
 }
 
 .header__logo:hover {
-  color: var(--color-burgundy-hover);
+  opacity: 0.92;
 }
 
-.header__logoText {
-  color: inherit;
+.header__logo:focus-visible {
+  outline: 2px solid var(--color-burgundy);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.header__logoMark {
+  flex-shrink: 0;
 }
 
 .header__logoImg {

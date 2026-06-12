@@ -9,7 +9,7 @@ const isValidId = (id) =>
 
 export const listPendingUsers = async (req, res) => {
   try {
-    const fromPending = await PendingRegistration.find()
+    const fromPending = await PendingRegistration.find({ visibleToModerator: true })
       .select("name surname email createdAt")
       .sort({ createdAt: -1 })
       .lean();

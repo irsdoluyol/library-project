@@ -5,6 +5,8 @@ import Footer from "../components/layout/Footer.jsx";
 import CatalogSearch from "../components/catalog/CatalogSearch.jsx";
 import FeedbackWidget from "../components/feedback/FeedbackWidget.jsx";
 import UserMonogram from "../components/common/UserMonogram.jsx";
+import SiteLogo from "../components/common/SiteLogo.jsx";
+import BrandTitle from "../components/common/BrandTitle.jsx";
 import layoutStyles from "./MainLayout.module.css";
 import sidebarStyles from "./Sidebar.module.css";
 import headerStyles from "./Header.module.css";
@@ -126,7 +128,7 @@ function MainLayout() {
             <ChevronLeftIcon />
           </span>
         </button>
-        <Link to="/" className={sidebarStyles.sidebar__logo}>
+        <Link to="/" className={sidebarStyles.sidebar__logo} aria-label="На главную, онлайн-библиотека">
           <span className={sidebarStyles.sidebar__logoText}>Библиотека</span>
         </Link>
         <nav className={sidebarStyles.sidebar__nav}>
@@ -177,8 +179,14 @@ function MainLayout() {
         data-sidebar-collapsed={sidebarCollapsed || undefined}
       >
         <header className={`${headerStyles.header} ${showFact ? headerStyles.headerWithFact : ""}`}>
-          <Link to="/" className={headerStyles.header__logo}>
-            <span className={headerStyles.header__logoText}>Библиотека</span>
+          <Link
+            to="/"
+            className={headerStyles.header__logo}
+            aria-label="На главную, Im. Library"
+            data-brand-header-link
+          >
+            <SiteLogo className={headerStyles.header__logoMark} />
+            <BrandTitle variant="header" />
           </Link>
 
           <div className={headerStyles.header__center}>
